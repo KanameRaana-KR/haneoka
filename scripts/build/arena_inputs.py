@@ -96,7 +96,7 @@ def main():
     parser.add_argument("--pins", type=Path)
     parser.add_argument("--wrangler", action="store_true", help="Use local Wrangler authentication for read-only staging")
     args = parser.parse_args()
-    bucket = os.environ.get("R2_BUCKET", "hotdori-assets")
+    bucket = os.environ.get("R2_BUCKET", "siriustrack")
     store = WranglerReader(bucket) if args.wrangler else R2Store(SimpleNamespace(r2_bucket=bucket))
     pins = json.loads(args.pins.read_bytes()) if args.pins else None
     print(json.dumps(stage(store, args.output, args.server or ("jp", "intl"), pins)))

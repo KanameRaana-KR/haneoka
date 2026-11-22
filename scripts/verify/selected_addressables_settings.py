@@ -26,8 +26,8 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     captured.MAX_REMOTE_BYTES = 8 * 1024 * 1024
     captured.MAX_RANGE_BYTES = 2 * 1024 * 1024
-    store = captured.R2Store(SimpleNamespace(r2_bucket="hotdori-assets"), concurrency=1)
-    if store.bucket != "hotdori-assets":
+    store = captured.R2Store(SimpleNamespace(r2_bucket="siriustrack"), concurrency=1)
+    if store.bucket != "siriustrack":
         raise ValueError("settings reader bucket differs from the current source bucket")
     metadata = store.head(captured.cas_key(captured.APK_SHA))
     if metadata is None or metadata["ContentLength"] != 452888806:

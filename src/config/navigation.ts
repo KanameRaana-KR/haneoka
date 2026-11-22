@@ -126,6 +126,7 @@ export const PRIMARY_DESTINATIONS: PrimaryDestination[] = [
     label: "navigation.games",
     match: ["/games", "/sonolus", "/song-puzzle", "/song-guess", "/tools/song-puzzle"],
   },
+  { id: "Track", route: "/track", icon: "monitoring", label: "Track", match: ["/track"] },
   { id: "community", route: "/community", icon: "forum", label: "navigation.community", match: ["/community"] },
   { id: "search", route: "/search", icon: "search", label: "common.actions.search", match: ["/search"] },
 ];
@@ -208,7 +209,6 @@ const sections: NavSection[] = [
     id: "games",
     label: "navigation.games",
     items: [
-      { route: "/sonolus", icon: "sports_esports", label: "catalog.sonolus.title" },
       { route: "/song-puzzle", icon: "extension", label: "tools.songPuzzle.title" },
       { route: "/song-guess", icon: "help", label: "catalog.songGuess.title" },
     ],

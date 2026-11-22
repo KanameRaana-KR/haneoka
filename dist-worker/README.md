@@ -1,0 +1,1 @@
+This folder contains the built output assets for the worker "haneoka" generated at 2026-11-22T09:49:50.448Z.

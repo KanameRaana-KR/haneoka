@@ -1,4 +1,4 @@
-export const HANEOKA_EXPORT_BRAND = { name: "haneoka", url: "haneoka.org", logo: "/android-chrome-192x192.png" };
+export const HANEOKA_EXPORT_BRAND = { name: "SiriusTrack", url: "siriustrack.site", logo: "/android-chrome-192x192.png" };
 
 export function drawExportBrand(
   ctx: CanvasRenderingContext2D,

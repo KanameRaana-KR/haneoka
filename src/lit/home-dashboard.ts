@@ -650,27 +650,7 @@ export class HomeDashboard extends LitElement {
       html`
         <a
           class="icon-button"
-          href=${sonolusServerLink()}
-          aria-label="Sonolus"
-          title="Sonolus"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="/images/sonolus-icon.png" width="24" height="24" alt="" />
-        </a>
-        <a
-          class="icon-button"
-          href=${`https://docs.haneoka.org/${this.locale === "zh-CN" || this.locale === "zh-TW" ? "zh-cn/" : ""}`}
-          aria-label=${docs}
-          title=${docs}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ${icon("description", 24)}
-        </a>
-        <a
-          class="icon-button"
-          href="https://github.com/haneoka-gakuen/haneoka"
+          href="https://github.com/KanameRaana-KR/haneoka"
           aria-label="GitHub"
           title="GitHub"
           target="_blank"

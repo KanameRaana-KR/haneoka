@@ -1,0 +1,1 @@
+const s=["ja","en","zh-TW","zh-CN","ko"],n=["forum","chat","style","emoji_emotions","music_note","auto_stories","groups","menu_book","help","lightbulb","flag"];function e(o){return n.includes(o)?o:"forum"}function u(o){return o.filter(t=>t.isInternal!==!0)}export{s as F,n as a,e as f,u as v};

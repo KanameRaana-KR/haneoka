@@ -1,0 +1,14 @@
+---
+import { staticBuildPaths } from "../../server/static-build";
+import TrackDocument from "../../components/TrackDocument.astro";
+import { LOCALES, type Locale } from "../../i18n/locales";
+
+export function getStaticPaths() {
+  return staticBuildPaths(
+    "src/pages/[locale]/track.astro",
+    LOCALES.map((locale) => ({ params: { locale }, props: { locale } })),
+  );
+}
+const { locale } = Astro.props as { locale: Locale };
+---
+<TrackDocument locale={locale} />

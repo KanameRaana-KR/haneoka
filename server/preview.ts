@@ -457,7 +457,7 @@ async function servePublicApi(req: IncomingMessage, res: ServerResponse, url: UR
   if (!["GET", "HEAD", "OPTIONS"].includes(req.method || "GET") && !/\/(?:image\.png|images\.zip)$/u.test(url.pathname)) return false;
   const module = await (publicApiModule ??= (async () => {
     const { build } = await import("esbuild");
-    const result = await build({ stdin: { contents: 'export { handleResourceImage } from "./worker/resource-image.ts";export { handleGamePlatform } from "./worker/game-platform.ts";export { handlePublicGameApi } from "./worker/game-public.ts";export { handleApiDiscovery } from "./worker/api-discovery.ts";export { handleChartImageRequest } from "./worker/chart-image.ts";export { renderNativeChart } from "./worker/chart-native-renderer.ts";', resolveDir: ROOT }, bundle: true, format: "esm", platform: "node", write: false, external: ["@cloudflare/playwright"],
+    const result = await build({ stdin: { contents: 'export { handleResourceImage } from "./worker/resource-image.ts";export { handleApiDiscovery } from "./worker/api-discovery.ts";export { handleChartImageRequest } from "./worker/chart-image.ts";export { renderNativeChart } from "./worker/chart-native-renderer.ts";', resolveDir: ROOT }, bundle: true, format: "esm", platform: "node", write: false, external: ["@cloudflare/playwright"],
       banner: { js: `import { createRequire as createLocalRequire } from "node:module";const require = createLocalRequire(${JSON.stringify(path.join(ROOT, "package.json"))});` } });
     return await import(`data:text/javascript;base64,${Buffer.from(result.outputFiles![0]!.contents).toString("base64")}`) as PublicApiModule;
   })());

@@ -1,188 +1,33 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "haneoka",
-  "main": "worker/index.ts",
-  "compatibility_date": "2026-09-05",
-  "compatibility_flags": ["nodejs_compat"],
-  "workers_dev": false,
-  "preview_urls": false,
-
-  "routes": [
-    { "pattern": "haneoka.org", "custom_domain": true },
-    { "pattern": "haneoka.com/*", "zone_name": "haneoka.org" },
+  "main": "dist-worker/index.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": [
+    "nodejs_compat"
   ],
-
-  // Resource dispatch currently reads a fine-grained Actions:write token from
-  // `wrangler secret put GITHUB_ACTIONS_TOKEN`; migrate this to a GitHub App
-  // installation token when automated credential rotation is introduced.
+  "minify": true,
+  "workers_dev": true,
+  "preview_urls": true,
   "vars": {
-    "COMMUNITY_HIDDEN_HOSTS": "haneoka.com",
-    "ADMIN_PACKAGE_MAX_BYTES": "2147483648",
-    "BETTER_AUTH_URL": "https://haneoka.org",
-    "AUTH_EMAIL_FROM": "noreply@haneoka.org",
-    "TURNSTILE_ENABLED": "false",
-    "OFFICIAL_RANKING_ENABLED_REGIONS": "jp,tw,en,kr",
-    "OFFICIAL_RANKING_READ_REGIONS": "jp,tw,en,kr",
+    "COMMUNITY_HIDDEN_HOSTS": "siriustrack.site,www.siriustrack.site",
+    "BETTER_AUTH_URL": "https://siriustrack.site",
+    "TURNSTILE_ENABLED": "false"
   },
-
   "assets": {
     "directory": "./.output/public",
     "binding": "ASSETS",
     "not_found_handling": "none",
-    // Public documents and hashed data stay direct; dynamic pages and resource reads use the Worker.
     "run_worker_first": [
-      "/sitemap.xml",
-      "/sitemap-*.xml",
-      "/robots.txt",
-      "/404",
-      "/404.html",
       "/api/*",
-      "/*/admin/*",
-      "/*/auth/*",
-      "/*/community/*",
-      "/*/catalog/*",
-      "/*/calendar/*",
-      "/*/announcements/*",
-      "/*/assets/*",
-      "/*/chart-editor/*",
-      "/*/gacha-history/*",
-      "/*/player-profile/*",
-      "/*/404/*",
-      "/*/charts/*",
-      "/*/community-stories/*",
-      "/artifacts/*",
       "/assets/*",
-      "/catalog/assets/*",
-      "/intl-test/*",
-      "/jp-test-*",
-      "/jp-cbt/*",
-      "/intl-cbt/*",
-      "/community/*",
-      "/game-client/*",
-      "/objects/*",
       "/runtime/*",
-      "/sonolus/*",
+      "/objects/*",
       "/provider-static/*",
       "/static-views/*",
       "/asset-static/*",
       "/playlist-static/*",
-    ],
-  },
-
-  "r2_buckets": [
-    {
-      "binding": "ASSET_BUCKET",
-      "bucket_name": "hotdori-assets",
-    },
-    {
-      "binding": "COMMUNITY_UPLOADS",
-      "bucket_name": "haneoka-community-uploads",
-    },
-    {
-      "binding": "RESOURCE_PACKAGE_INGRESS",
-      "bucket_name": "haneoka-resource-package-ingress",
-    },
-    {
-      "binding": "OFFICIAL_RANKING_DATA",
-      "bucket_name": "haneoka-official-rankings",
-    },
-  ],
-
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "haneoka-community",
-      "database_id": "d73093dd-69cf-4c44-849e-f113e9889b84",
-      "migrations_dir": "worker/database/migrations",
-    },
-    {
-      "binding": "RECORDS_DB",
-      "database_name": "haneoka-records",
-      "database_id": "5f247a6a-45b8-480d-8fb2-e368a0594013",
-      "migrations_dir": "worker/database/records-migrations",
-    },
-  ],
-
-  "containers": [{
-    "class_name": "CommunityMediaContainer",
-    "image": "./packages/community-media/Dockerfile",
-    "image_build_context": ".",
-    "instance_type": {"vcpu": 1, "memory_mib": 3072, "disk_mb": 4096},
-    "max_instances": 2
-  }],
-  "durable_objects": {"bindings": [
-    {"name": "MEDIA_PROCESSOR", "class_name": "CommunityMediaContainer"}
-  ]},
-  "migrations": [
-    {"tag": "community-media-v1", "new_sqlite_classes": ["CommunityMediaContainer"]},
-    {"tag": "official-ranking-v1", "new_sqlite_classes": ["OfficialRankingCollector"]},
-    {"tag": "search-container-v1", "new_sqlite_classes": ["SearchContainer"]},
-    {"tag": "search-container-v2", "deleted_classes": ["SearchContainer"]},
-    {"tag": "self-hosted-v1", "deleted_classes": ["CommunityMediaContainer", "OfficialRankingCollector"]},
-    {"tag": "community-media-v2", "new_sqlite_classes": ["CommunityMediaContainer"]}
-  ],
-
-  "browser": { "binding": "BROWSER" },
-
-  "ai": {
-    "binding": "AI",
-  },
-
-  "queues": {
-    "producers": [
-      {"binding": "MEDIA_QUEUE", "queue": "haneoka-community-media"},
-      {
-        "binding": "MODERATION_QUEUE",
-        "queue": "haneoka-community-moderation",
-      },
-    ],
-    "consumers": [
-      {"queue": "haneoka-community-media", "max_batch_size": 1, "max_batch_timeout": 1, "max_retries": 3, "retry_delay": 30, "max_concurrency": 2},
-      {
-        "queue": "haneoka-community-moderation",
-        "max_batch_size": 5,
-        "max_batch_timeout": 2,
-        "max_retries": 3,
-        "retry_delay": 30,
-        "dead_letter_queue": "haneoka-community-moderation-dlq",
-        "max_concurrency": 3,
-      },
-    ],
-  },
-
-  "send_email": [
-    {
-      "name": "EMAIL",
-      "allowed_sender_addresses": ["noreply@haneoka.org"],
-    },
-  ],
-
-  "ratelimits": [
-    { "name": "IMAGE_RENDERER_RATE_LIMITER", "namespace_id": "412675", "simple": { "limit": 10, "period": 60 } },
-    { "name": "GAME_API_RATE_LIMITER", "namespace_id": "412674", "simple": { "limit": 20, "period": 60 } },
-    {
-      "name": "COMMUNITY_RATE_LIMITER",
-      "namespace_id": "412673",
-      "simple": {
-        "limit": 20,
-        "period": 60,
-      },
-    },
-  ],
-
-  "triggers": {
-    "crons": ["*/2 * * * *", "*/5 * * * *", "17 * * * *", "37 */6 * * *", "23 3 * * *", "41 * * * *", "11 * * * *"],
-  },
-
-  "observability": {
-    "enabled": true,
-    "logs": {
-      "enabled": true,
-      "head_sampling_rate": 0.1,
-    },
-    "traces": {
-      "enabled": true,
-      "head_sampling_rate": 0.05,
-    },
-  },
+      "/intl/*",
+      "/jp/*"
+    ]
+  }
 }

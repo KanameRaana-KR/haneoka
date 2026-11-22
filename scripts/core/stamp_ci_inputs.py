@@ -113,8 +113,8 @@ def main() -> int:
     from core.config import load_server_config
     from publish.r2 import R2Store
     config = load_server_config(args.server)
-    if config.r2_bucket != "hotdori-assets":
-        raise ValueError("reviewed stamp bootstrap belongs to hotdori-assets")
+    if config.r2_bucket != "siriustrack":
+        raise ValueError("reviewed stamp bootstrap belongs to siriustrack")
     print(stable_json(restore_reviewed_inputs(R2Store(config, 2), args.output)))
     return 0
 

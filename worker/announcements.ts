@@ -1,6 +1,7 @@
 import { normalizeAuthorLocale } from "@haneoka/i18n";
 import { negotiateRequestLocale } from "../src/i18n/negotiation";
 import { selectAnnouncementLocale } from "../src/lib/announcements";
+import { isSiteHostname } from "../src/lib/site-origin";
 
 const CORS: Readonly<Record<string, string>> = {
   "Access-Control-Allow-Origin": "*",
@@ -70,7 +71,7 @@ function canonicalMediaUrl(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
   try {
     const url = new URL(value);
-    if (url.protocol !== "https:" || url.hostname !== "haneoka.org" || url.search || url.hash) return undefined;
+    if (url.protocol !== "https:" || (!isSiteHostname(url.hostname) && url.hostname !== "haneoka.org") || url.search || url.hash) return undefined;
     return url.toString();
   } catch {
     return undefined;

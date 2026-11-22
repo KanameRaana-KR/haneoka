@@ -3,10 +3,11 @@
 // Output: 双域名白名单、当前站点源和保持当前入口的地址。
 // Pos: [Map](L2-2.md)；Worker、认证和浏览器共用的站点域名契约。
 // Effects/Dependencies: 浏览器调用默认读取 location；其他调用显式传入 URL 或源。
-export const CANONICAL_ORIGIN = "https://haneoka.org";
-export const SITE_HOSTNAMES = ["haneoka.org", "haneoka.com"] as const;
+export const CANONICAL_ORIGIN = "https://siriustrack.site";
+export const SITE_HOSTNAMES = ["siriustrack.site", "www.siriustrack.site"] as const;
 
-export const isSiteHostname = (hostname: string): boolean => SITE_HOSTNAMES.some((host) => host === hostname);
+export const isSiteHostname = (hostname: string): boolean =>
+  SITE_HOSTNAMES.some((host) => host === hostname) || hostname.endsWith(".workers.dev") || hostname.endsWith(".pages.dev");
 
 export const isLocalHostname = (hostname: string): boolean =>
   hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";

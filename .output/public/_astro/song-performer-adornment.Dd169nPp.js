@@ -1,0 +1,1 @@
+import"./lit-element.Bc_VOJIm.js";import{A as m}from"./lit-html.DhDqt3I2.js";import{c as i}from"./catalog-relationships.Cko_f-QP.js";function p(o,a=t=>t){const t=[...o.logos.map(r=>({...r,key:`band:${r.id}`})),...o.portraits];return t.length?i(t.map(r=>({...r,image:a(r.image)}))):m}export{p as s};

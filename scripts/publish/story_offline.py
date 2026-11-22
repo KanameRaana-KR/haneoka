@@ -264,7 +264,7 @@ def main():
     parser.add_argument("--wrangler", action="store_true")
     parser.add_argument("--directory", type=Path)
     args = parser.parse_args()
-    store = DownloadStore("hotdori-assets", wrangler=args.wrangler)
+    store = DownloadStore("siriustrack", wrangler=args.wrangler)
     with tempfile.TemporaryDirectory(prefix="haneoka-story-offline-") as temporary:
         cache = args.directory or Path(temporary)
         for _ in range(3):

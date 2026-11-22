@@ -1,10 +1,12 @@
 import type { CommunityForumDirectory } from "../lib/community-forum-directory";
 import { visibleCommunityForums } from "../lib/community-forums";
+import { communityPagesEnabled } from "../lib/site-community";
 import { staticBuildJson } from "./static-input-store";
 
 type PublicForumDirectory = Pick<CommunityForumDirectory, "forums" | "groups">;
 let snapshot: Promise<PublicForumDirectory> | undefined;
 export function publicForumDirectory(): Promise<PublicForumDirectory> {
+  if (!communityPagesEnabled()) return Promise.resolve({ forums: [], groups: [] });
   return (snapshot ??= staticBuildJson("community:forums", "public-data", async () => {
     const origin = (process.env.STATIC_CATALOG_ORIGIN || "https://haneoka.org").replace(/\/+$/u, "");
     for (let attempt = 0; ; attempt++) {

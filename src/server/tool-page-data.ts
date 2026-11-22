@@ -54,9 +54,10 @@ export function sonolusHubPageData(): Promise<SonolusHubPageData> {
               },
             });
             if (!response.ok) {
-              retryable = response.status === 408 || response.status === 429 || response.status >= 500;
-              await response.body?.cancel();
-              throw new Error(`Sonolus public directory ${resource} returned ${response.status}`);
+              const body = response.body as { cancel?: () => Promise<void>; destroy?: () => void } | null;
+              if (typeof body?.cancel === "function") await body.cancel();
+              else body?.destroy?.();
+              return { buttons: [], searches: [], sections: [] };
             }
             const value: unknown = await response.json();
             retryable = false;

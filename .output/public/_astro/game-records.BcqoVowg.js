@@ -1,0 +1,1 @@
+const _=6e4,P=3e5;function l(n,E,R){return n==null||E==null||R-E>=6e4?null:R-n<3e5?"online":"offline"}const t={jp:"JP",tw:"TW/HK/MO",en:"EN Regions",kr:"KR"},e={2:"tw",3:"en",4:"kr",5:"jp"},L=n=>/^[2-5]\d{10}$/u.test(n)?e[n[0]]:null;export{t as G,_ as P,P as a,l as b,L as p};

@@ -1,0 +1,78 @@
+import{i as D}from"./lit-element.Bc_VOJIm.js";import{b as p,A as k,c as S}from"./lit-html.DhDqt3I2.js";import{f as R,u as _,l as I,h as N,n as U}from"./catalog.CfAhzaok.js";import{i as B}from"./locales.BBzJ2au5.js";import{l as M}from"./resource-route.BR5kLHYo.js";import{c as G}from"./client.BYho01b_.js";import{i as $}from"./icon.BSt8MVsq.js";import{d as O}from"./dialogue-row.Bd_HDt2v.js";import{a as P}from"./state.Ck623oKm.js";/* empty css                        */import{l as V}from"./loading-indicator.dXh2gc3V.js";import{a as j}from"./accordion.CRbde2Jj.js";import{s as q}from"./server-availability.q3NOHCqi.js";function F(i,e,...t){return G(i,`media.voice.${e}`,e,t)}const K=["normal","realLive","feature","seasonal","birthday","growth","gacha","liveStart","gekisouStart","gekisouEnd","liveEnd","liveDialogue","livePairDialogue","liveResult","liveBattleResult","location","title","other"],x=["comment","growth","gacha","live","location","title","other"],H=["normal","characterRankUp","seasonal","birthday","login","exchange","realLiveDay","levelUp","realLiveBefore"],W=["levelUp","awaken","skillUp","rankUp","clear","fullCombo","allPerfect","result","battleFirst","battleHigh","battleLow"],z=["normal","login","characterRankUp","exchange","realLiveBefore","realLiveDay","feature","spring","summer","autumn","winter","christmas","newYear","valentine","seasonal","birthday","levelUp","awaken","skillUp","rankUp","gacha","start","gekisouCombo","gekisouJust","gekisouLuck","gekisouTop","clear","fullCombo","allPerfect","combo","skill","result","resultSolo","resultPair","battleFirst","battleHigh","battleLow","spotEnter","spotConversation","spotTap","spotAfter","locationConversation","titleBushiroad","titleBushimo","titleBushiroadGames","titleFromTokyo","titleBilibili","titleApp","titleOtherCompany","other"];function g(i){if(typeof i.voiceKind=="string")return i.voiceKind;switch(Number(i.masterType)){case 0:return Number(i.birthdayCharacterId)>0?"birthday":i.seasonStartAt||i.seasonEndAt?{"4/1":"spring","7/1":"summer","9/1":"autumn","12/1":"winter","12/24":"christmas","1/1":"newYear","2/14":"valentine"}[String(i.seasonStartAt)]||"seasonal":H[Number(i.talkCategory)]||"feature";case 1:return W[Number(i.characterVoiceType)]||"other";case 2:return"gacha";case 3:return"skill";case 4:return["gekisouCombo","gekisouJust","gekisouLuck","gekisouTop"][Number(i.gekisouVoiceType)]||"other";case 5:case 6:return Number(i.dialogueType)===2?"skill":"combo";case 7:return"start";default:return"other"}}function m(i){if(K.includes(i.voiceGroup))return i.voiceGroup;const e=g(i);return Number(i.masterType)===0&&[1,4,5,7].includes(Number(i.talkCategory))?"feature":["normal","login","exchange"].includes(e)?"normal":e.startsWith("realLive")?"realLive":["spring","summer","autumn","winter","christmas","newYear","valentine","seasonal"].includes(e)?"seasonal":e==="birthday"?"birthday":["characterRankUp","levelUp","awaken","skillUp","rankUp"].includes(e)?"growth":e==="gacha"?"gacha":e==="start"?"liveStart":e==="gekisouTop"?"gekisouEnd":e.startsWith("gekisou")?"gekisouStart":["clear","fullCombo","allPerfect"].includes(e)?"liveEnd":Number(i.masterType)===6?"livePairDialogue":["combo","skill"].includes(e)?"liveDialogue":e==="result"?"liveResult":e.startsWith("battle")?"liveBattleResult":e==="feature"?"feature":"other"}function Y(i){if(i.collectionTab!==void 0)return x[Number(i.collectionTab)]||"other";const e=m(i);return["normal","realLive","feature","seasonal","birthday"].includes(e)?"comment":["growth","gacha","location","title","other"].includes(e)?e:"live"}function A(i){return"groups."+i}const J=g;function y(i){return(Array.isArray(i.lines)?i.lines:[i]).map(t=>{const a=t.sound&&typeof t.sound=="object"?t.sound:{};return{characterId:Number(t.characterId||(i.characterIds?.length===1?i.characterIds[0]:0)),text:t.text,url:String(a.playableUrl||t.playableUrl||""),duration:Math.max(0,Number(a.durationMs||0)/1e3)}})}function T(i){return String(i.voiceKey||[i.masterType,i.masterId].join(":"))}function L(i,e,t=0){const a=r=>z.indexOf(g(r)),s=r=>Number(r.birthdayCharacterId)===t?-1:Number(r.birthdayCharacterId)||0,o=r=>(r.characterIds||[]).join(",");return K.indexOf(m(i))-K.indexOf(m(e))||a(i)-a(e)||s(i)-s(e)||Number(i.spotId||0)-Number(e.spotId||0)||Number(i.unlockCharacterRank||i.unlockFriendshipRank||0)-Number(e.unlockCharacterRank||e.unlockFriendshipRank||0)||Number(e.scoreRank||0)-Number(i.scoreRank||0)||o(i).localeCompare(o(e),"en",{numeric:!0})||Number(i.masterId||0)-Number(e.masterId||0)||Number(i.variantNumber||0)-Number(e.variantNumber||0)||T(i).localeCompare(T(e),"en",{numeric:!0})}function w(i,e,t=0){const a=/^(\d{1,2})\/(\d{1,2})$/.exec(String(e||""));if(!a)return"";const s=new Date(Date.UTC(t>0?t:2e3,Number(a[1])-1,Number(a[2])));return R(i,s,{timeZone:"UTC",year:t>0?"always":"never"})}function Z(i,e){const t=Number(i.year)||0,a=w(e,i.seasonStartAt,t),s=w(e,i.seasonEndAt,t);return a&&s&&a!==s?[a,s].join(" – "):a||s}function E(i){return i.map(e=>{if(!Array.isArray(e.recordings)||!e.recordings.length)return e;const{recordings:t,...a}=e;return{...a,...t[0]}})}const Q={character:"catalog.fields.character",empty:"common.states.empty",error:"common.states.error",loading:"common.states.loading",none:"common.states.none",refresh:"common.actions.refresh",retry:"common.actions.retry",stop:"common.actions.stop",title:"common.fields.title",unavailable:"common.states.unavailable"};class X extends D{static properties={entries:{attribute:!1},characters:{attribute:!1},locale:{},server:{},characterId:{type:Number},compact:{type:Boolean},activeClipKey:{state:!0},expandedGroups:{state:!0}};audio;audioEvents;generation=0;clipStatuses=new Map;onMusic=e=>{e.detail?.playing&&this.cancelActive()};onOtherVoice=e=>{e.detail!==this&&this.cancelActive()};constructor(){super(),this.entries=[],this.characters=[],this.locale="ja",this.server="intl",this.characterId=0,this.compact=!1,this.activeClipKey="",this.expandedGroups=new Set(["comment"])}createRenderRoot(){return this}connectedCallback(){super.connectedCallback(),addEventListener("haneoka-audio-state",this.onMusic),addEventListener("haneoka:character-voice",this.onOtherVoice)}disconnectedCallback(){this.releaseMedia(),removeEventListener("haneoka-audio-state",this.onMusic),removeEventListener("haneoka:character-voice",this.onOtherVoice),super.disconnectedCallback()}willUpdate(e){e.has("characterId")?(this.releaseMedia(),this.clipStatuses.clear(),this.expandedGroups=new Set(["comment"])):e.has("entries")&&this.activeClipKey&&!this.entries.some(t=>this.activeClipKey.startsWith(`${this.voiceKey(t)}:`))&&this.releaseMedia()}v(e,...t){return F(this.locale,e,...t)}t(e){return _(this.locale,Q[e]??e)}character(e){return this.characters.find(t=>Number(t.characterId)===e)}name(e){return I(this.character(e)?.characterName,this.locale)||this.t("character")}voiceKey(e){return String(e.voiceKey||`${e.masterType}:${e.masterId}`)}entryTitle(e){const t=I(e.title,this.locale)||this.v(J(e)),a=Number(e.scoreRank||0),s=Number(e.masterType)===1&&Number(e.characterVoiceType)===7&&a>0?["","E","D","C","B","A","S","SS"][a]:"",o=Number(e.dialogueCallType)===1?this.v("call"):Number(e.dialogueCallType)===2?this.v("response"):"",r=Number(e.birthdayCharacterId||0);if(r>0)return this.v("birthdayOf",this.name(r));const l=Number(e.masterType)===6||g(e)==="resultPair"&&e.characterIds.length>1?e.characterIds.map(c=>this.name(Number(c))).join(" → "):"";return[t,s,o,l].filter(Boolean).join(" / ")}clipKey(e,t){return`${this.voiceKey(e)}:${t}`}clipStatus(e){return this.clipStatuses.get(e)||{state:"idle"}}setClipStatus(e,t,a){this.clipStatuses.set(e,{state:t,message:a}),this.requestUpdate()}releaseMedia(e="cancelled"){const t=this.activeClipKey;this.generation++,this.activeClipKey="";const a=this.audio;this.audio=void 0,this.audioEvents?.abort(),this.audioEvents=void 0,a?.pause(),a?.removeAttribute("src"),a?.load(),t&&this.setClipStatus(t,e)}cancelActive(){this.releaseMedia("cancelled")}finishActive(){this.activeClipKey&&this.releaseMedia("idle")}failActive(){const e=this.activeClipKey;e&&(this.releaseMedia("idle"),this.setClipStatus(e,"error",this.v("failure")))}async playSequence(e,t){const a=y(e),s=t.flatMap(d=>a[d]?.url?[{index:d,line:a[d]}]:[]);if(!s.length)return;this.cancelActive();const o=++this.generation,r=new Audio,l=new AbortController;this.audio=r,this.audioEvents=l;let c=0;const n=()=>this.audio===r&&this.generation===o,u=async()=>{if(!n())return;const{index:d,line:f}=s[c],v=this.clipKey(e,d);this.activeClipKey=v,this.setClipStatus(v,"loading",this.v("loading")),r.src=f.url;try{await r.play(),n()&&this.activeClipKey===v&&this.setClipStatus(v,"playing")}catch(b){n()&&this.activeClipKey===v&&!(b instanceof DOMException&&b.name==="AbortError")&&this.failActive()}},h=(d,f)=>r.addEventListener(d,()=>{n()&&f()},{signal:l.signal});r.preload="none",h("playing",()=>this.setClipStatus(this.activeClipKey,"playing")),h("waiting",()=>{r.paused||this.setClipStatus(this.activeClipKey,"loading",this.v("loading"))}),h("ended",()=>{this.setClipStatus(this.activeClipKey,"idle"),++c<s.length?u():this.finishActive()}),h("error",()=>this.failActive()),document.querySelector("audio-dock")?.pausePlayback?.(),dispatchEvent(new CustomEvent("haneoka:character-voice",{detail:this})),await u()}async playLine(e,t){const a=this.clipKey(e,t),s=this.clipStatus(a).state;this.activeClipKey===a&&(s==="loading"||s==="playing")?this.cancelActive():await this.playSequence(e,[t])}playGroup(e){this.activeClipKey.startsWith(`${this.voiceKey(e)}:`)?this.cancelActive():this.playSequence(e,y(e).map((t,a)=>a))}lineAction(e,t,a,s){const o=this.clipKey(e,t),r=this.clipStatus(o),l=this.activeClipKey===o,c=l&&r.state==="playing",n=l&&r.state==="loading",u=n?this.v("loading"):c?this.v("stop"):r.state==="error"?this.t("retry"):this.v("playLine"),h=this.compact?u:`${u} / ${s}`;return p`
+      <button
+        class="icon-button dialogue-row__play"
+        type="button"
+        ?disabled=${!a.url}
+        aria-label=${h}
+        aria-pressed=${String(c)}
+        aria-busy=${String(n)}
+        title=${h}
+        @click=${()=>void this.playLine(e,t)}
+      >
+        ${n?p`
+                ${V({className:"dialogue-row__progress"})}
+              `:$(c?"stop":r.state==="error"?"refresh":"play_arrow",24)}
+      </button>
+    `}renderLine(e,t){const a=y(e)[t],s=N(a.text,this.locale),o=this.character(a.characterId),r=String(o?.faceImage||""),l=this.clipKey(e,t),c=this.clipStatus(l),n=c.message||(a.url?"":this.v("unavailable")),u=a.characterId?this.name(a.characterId):U(e.characterIds.map(h=>this.name(h)),this.locale);return O({key:l,className:`voice-line voice-line--${m(e)}`,avatar:this.compact?k:r?p`
+            <img src=${r} alt="" loading="lazy" width="48" height="48" />
+          `:$("person",24),speaker:this.compact?"":u,speakerContent:p`
+        ${u}
+        ${e.sourcesComplete?q(e.sourceServers||[],this.locale):k}
+      `,speakerLanguage:N(o?.characterName,this.locale).locale,text:s.text||(m(e)==="title"?this.v(g(e)):this.v("noText")),textLanguage:s.locale,action:this.lineAction(e,t,a,u),state:c.state,statusMessage:n})}calendarDate(e){const t=Z(e,this.locale),a=this.character(Number(e.birthdayCharacterId))?.birthday,s=a?w(this.locale,`${a.month}/${a.day}`,Number(e.year)||0):"",o=Number(e.startAt?.[0]||0),r=m(e)==="realLive"&&o?R(this.locale,o,{timeZone:"Asia/Tokyo",year:"always"}):"";return t||s||r}condition(e){return Number(e.unlockCharacterRank)>1?this.v("unlockRank",Number(e.unlockCharacterRank)):Number(e.unlockFriendshipRank)>0?this.v("unlockBond",Number(e.unlockFriendshipRank)):""}renderEntry(e,t,a=!1){const s=y(e),o=this.entryTitle(e),r=e.title?N(e.title,this.locale).locale:this.locale,l=[a?"":this.calendarDate(e),this.condition(e)].filter(Boolean).join(" / "),c=s.length>1,n=this.activeClipKey.startsWith(`${this.voiceKey(e)}:`),h=(c||e.title||l||e.scoreRank||e.dialogueCallType||e.birthdayCharacterId)&&(c||!t||o!==this.entryTitle(t)||this.condition(e)!==this.condition(t)||!a&&this.calendarDate(e)!==this.calendarDate(t)||e.cardId!==t.cardId),d=e.cardId?"member-cards":e.storyId?"stories":void 0,f=e.cardId||e.storyId,v=l?this.v("withDetails",o,l):o;return p`
+      <article
+        class=${`voice-entry${c?" voice-entry--sequence":""}`}
+        data-voice-key=${this.voiceKey(e)}
+        data-master-type=${String(e.masterType??"")}
+      >
+        ${h&&!this.compact?p`
+                <header class="voice-entry__header">
+                  <div class="voice-entry__identity">
+                    <h5 lang=${r}>
+                      ${d?p`
+                              <a
+                                href=${M({server:String(e.sourceServer||this.server),locale:B(this.locale)?this.locale:"en",kind:d,id:String(f)})}
+                              >
+                                ${v}
+                              </a>
+                            `:v}
+                    </h5>
+                  </div>
+                  ${c?p`
+                          <button
+                            class="button button--tonal voice-entry__play-group"
+                            type="button"
+                            ?disabled=${!s.some(b=>b.url)}
+                            aria-label=${`${n?this.v("stop"):this.v("playGroup")} / ${o}`}
+                            aria-pressed=${String(n)}
+                            @click=${()=>this.playGroup(e)}
+                          >
+                            ${$(n?"stop":"play_arrow",24)}
+                            <span>${n?this.v("stop"):this.v("playGroup")}</span>
+                          </button>
+                        `:k}
+                </header>
+              `:k}
+        <div class="voice-entry__lines dialogue-list">
+          ${S(s,(b,C)=>this.clipKey(e,C),(b,C)=>this.renderLine(e,C))}
+        </div>
+      </article>
+    `}grouped(){const e=E(this.entries).sort((t,a)=>L(t,a,this.characterId));return x.map(t=>({group:t,items:e.filter(a=>Y(a)===t)})).filter(({items:t})=>t.length)}subgroupKey(e){return[m(e),g(e),m(e)==="birthday"?"":this.calendarDate(e)].join(":")}render(){if(this.compact)return p`
+        <div class="character-voices" aria-label=${this.v("gacha")}>
+          ${S(E(this.entries).sort(L),t=>this.voiceKey(t),t=>this.renderEntry(t))}
+        </div>
+      `;const e=this.grouped();return p`
+      <section class="character-voices" aria-label=${this.v("title")}>
+        ${e.length?e.map(({group:t,items:a})=>j({id:`voice-group-${t}`,label:this.v(A(t)),metadata:a.length,headingLevel:3,expanded:this.expandedGroups.has(t),onExpandedChange:s=>{const o=new Set(this.expandedGroups);s?o.add(t):o.delete(t),this.expandedGroups=o},content:p`
+                    <div class="voice-group">
+                      ${[...new Set(a.map(s=>this.subgroupKey(s)))].map(s=>{const o=a.filter(h=>this.subgroupKey(h)===s),r=g(o[0]),l=m(o[0]),c=["realLive","liveDialogue","livePairDialogue","seasonal"].includes(l)?this.v(A(l))+" / "+this.v(r):this.v(r),n=l==="birthday"?"":this.calendarDate(o[0]),u=n?this.v("withDetails",c,n):c;return p`
+                          <section class="voice-subgroup" data-voice-kind=${r}>
+                            <h4 class="detail-section-title">${u}</h4>
+                            <div class="dialogue-list">
+                              ${S(o,h=>this.voiceKey(h),(h,d)=>this.renderEntry(h,o[d-1],!!n))}
+                            </div>
+                          </section>
+                        `})}
+                    </div>
+                  `})):P({title:this.t("empty"),icon:"volume_off"})}
+      </section>
+    `}}customElements.define("character-voices",X);

@@ -7,11 +7,9 @@ node_modules/
 /src/lib/team-builder/engine/generated/
 /.cache/
 /public/embed/
-dist
 .astro/
 .generated-public/
 .playwright-cli/
-.output/
 output/playwright/
 # Sonolus engine compile workspaces (full-build staging + single-facet matrix output)
 .build-parallel/
@@ -73,3 +71,8 @@ usmlogs/
 !/docs/assets/haneoka-social-card.svg
 /.zcode
 /packages/sonolus/.probe
+
+!.output/
+!.output/public/**
+!dist-worker/
+!dist-worker/**

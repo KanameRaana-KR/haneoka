@@ -74,7 +74,7 @@ def load_private_settings(server: str, registry: Path) -> dict[str, Any]:
         file = Path(filename)
         try:
             info = file.lstat()
-            if not stat.S_ISREG(info.st_mode) or info.st_mode & 0o077 or info.st_size > 131_072:
+            if not stat.S_ISREG(info.st_mode) or (os.name != 'nt' and (info.st_mode & 0o077)) or info.st_size > 131_072:
                 raise ValueError("runtime configuration file must be a private regular file, at most 128 KiB")
             raw = file.read_text("utf-8")
         except OSError:

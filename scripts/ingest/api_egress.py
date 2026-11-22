@@ -110,10 +110,94 @@ def is_managed_jp_read(url: str, proxy: str | None) -> bool:
     )
 
 
+def _grpcio_execute(
+    command: list[str], input_frame: bytes, timeout: float
+) -> subprocess.CompletedProcess[bytes] | None:
+    try:
+        import struct
+        import grpc
+    except ImportError:
+        return None
+    url = command[-1]
+    parsed = urllib.parse.urlsplit(url)
+    if parsed.scheme != "https" or not parsed.hostname or not parsed.path.startswith("/"):
+        return None
+    if len(input_frame) < 5 or input_frame[0] != 0:
+        return None
+    msg_len = struct.unpack_from(">I", input_frame, 1)[0]
+    raw_req = input_frame[5 : 5 + msg_len]
+
+    out_path: str | None = None
+    dump_hdr: str | None = None
+    meta: list[tuple[str, str]] = []
+    skip_hdrs = {"content-type", "te", "grpc-accept-encoding", "user-agent"}
+    idx = 0
+    while idx < len(command) - 1:
+        arg = command[idx]
+        if arg in ("-o", "--output") and idx + 1 < len(command):
+            out_path = command[idx + 1]
+            idx += 2
+        elif arg in ("-D", "--dump-header") and idx + 1 < len(command):
+            dump_hdr = command[idx + 1]
+            idx += 2
+        elif arg in ("-H", "--header") and idx + 1 < len(command):
+            hdr = command[idx + 1]
+            if ":" in hdr:
+                hk, hv = hdr.split(":", 1)
+                hk_l = hk.strip().lower()
+                if hk_l not in skip_hdrs:
+                    meta.append((hk_l, hv.strip()))
+            idx += 2
+        else:
+            idx += 1
+
+    channel = grpc.secure_channel(f"{parsed.hostname}:443", grpc.ssl_channel_credentials())
+    try:
+        rpc = channel.unary_unary(
+            parsed.path,
+            request_serializer=lambda x: x,
+            response_deserializer=lambda x: x,
+        )
+        resp_bytes, call = rpc.with_call(raw_req, metadata=meta, timeout=timeout)
+        hdr_lines = ["HTTP/2 200 ", "content-type: application/grpc"]
+        for k, v in list(call.initial_metadata()) + list(call.trailing_metadata()):
+            if isinstance(v, str):
+                hdr_lines.append(f"{k.lower()}: {v}")
+        hdr_lines.append("grpc-status: 0")
+        hdr_blob = ("\r\n".join(hdr_lines) + "\r\n\r\n").encode("utf-8")
+        frame = b"\x00" + struct.pack(">I", len(resp_bytes)) + resp_bytes
+        if out_path and out_path != "/dev/null":
+            Path(out_path).write_bytes(frame)
+        stdout_bytes = b""
+        if dump_hdr == "-":
+            stdout_bytes = hdr_blob
+        elif dump_hdr:
+            Path(dump_hdr).write_bytes(hdr_blob)
+        return subprocess.CompletedProcess(command, 0, stdout_bytes, b"")
+    except grpc.RpcError as rpc_err:
+        code_num = rpc_err.code().value[0] if hasattr(rpc_err, "code") else 2
+        msg = urllib.parse.quote(rpc_err.details() or "") if hasattr(rpc_err, "details") else ""
+        hdr_blob = f"HTTP/2 200 \r\ncontent-type: application/grpc\r\ngrpc-status: {code_num}\r\ngrpc-message: {msg}\r\n\r\n".encode("utf-8")
+        if out_path and out_path != "/dev/null":
+            Path(out_path).write_bytes(b"")
+        stdout_bytes = hdr_blob if dump_hdr == "-" else b""
+        if dump_hdr and dump_hdr != "-":
+            Path(dump_hdr).write_bytes(hdr_blob)
+        return subprocess.CompletedProcess(command, 0, stdout_bytes, b"")
+    except Exception as exc:
+        return subprocess.CompletedProcess(command, 28, b"", str(exc).encode("utf-8"))
+    finally:
+        channel.close()
+
+
 def run_api_curl(
     command: list[str], *, proxy: str | None, input: bytes, timeout: float,
     capture_output: bool = True, check: bool = False,
 ) -> subprocess.CompletedProcess[bytes]:
+    if not proxy:
+        grpc_res = _grpcio_execute(command, input, timeout)
+        if grpc_res is not None:
+            return grpc_res
     if not is_managed_jp_read(command[-1], proxy):
         return subprocess.run(command, input=input, timeout=timeout, capture_output=capture_output, check=check)
     global _TLS12_COMPATIBLE

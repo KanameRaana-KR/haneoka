@@ -1,0 +1,65 @@
+<!DOCTYPE html><meta charset="utf-8"><h1 id="astro-路由--l2-2">Astro 路由 · L2-2</h1>
+<p>上级：<a href="../L2.md">地图</a>。</p>
+<h2 id="职责与入口">职责与入口</h2>
+<p>路由选择 server、locale、资源类型和实体，调用 Document 组件及构建数据。<code>getStaticPaths</code> 不是单纯 URL 枚举：它可读取资料、登记构建覆盖并依赖静态输入。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>路由</th><th>责任</th></tr></thead><tbody><tr><td><a href="%5Bserver%5D/%5Blocale%5D/%5Bkind%5D/index.astro">[server]/[locale]/[kind]/index.astro</a></td><td>资源集合与特殊资源分派</td></tr><tr><td><a href="%5Bserver%5D/%5Blocale%5D/%5Bkind%5D/%5Bid%5D.astro">[server]/[locale]/[kind]/[id].astro</a></td><td>规范实体页</td></tr><tr><td><a href="%5Blocale%5D/%5B...slug%5D.astro">[locale]/[…slug].astro</a></td><td>通用语言路由</td></tr><tr><td><a href="%5Bserver%5D/%5Blocale%5D/player-ranks/index.astro">[server]/[locale]/player-ranks/index.astro</a>、<a href="%5Bserver%5D/%5Blocale%5D/friendship-ranks/index.astro">friendship-ranks/index.astro</a></td><td>图鉴账号与角色羁绊经验表的独立静态页，与录音室练习一样不生成逐级实体页</td></tr><tr><td><a href="%5Bserver%5D/%5Blocale%5D/band-rating/index.astro">[server]/[locale]/band-rating/index.astro</a></td><td>图鉴乐队评分门槛的独立静态表</td></tr><tr><td><a href="%5Bserver%5D/%5Blocale%5D/high-score-rating/index.astro">[server]/[locale]/high-score-rating/index.astro</a></td><td>图鉴最高分评级门槛的独立静态表</td></tr><tr><td><a href="provider-static/">provider-static</a>、<a href="static-views/">static-views</a>、<a href="asset-static/">asset-static</a>、<a href="playlist-static/">playlist-static</a></td><td>内部物理构建路径；公开地址经过共享路由和 Worker 还原</td></tr><tr><td><a href="%5Blocale%5D/community/gbp/stories/%5Bsection%5D/%5Bid%5D.astro">GBP 故事实体</a>、<a href="%5Blocale%5D/community/sekai/stories/%5Bsection%5D/%5Bid%5D.astro">世界计划故事实体</a></td><td>核心构建中的分类实体壳，缺少供应方预生成文档时仍提供独立阅读页</td></tr><tr><td><a href="i18n/">i18n</a></td><td>按内容版本／语言／命名空间输出消息</td></tr><tr><td><a href="sitemap.xml.ts">sitemap.xml.ts</a></td><td>索引及 <a href="sitemap-%5Bname%5D.xml.ts">sitemap 分片</a> 分片：公开工具、目录实体、技能、公告、排行榜与官方歌单的五语规范地址；十种扩展语言分片从英文 sitemap 由 Worker 流式派生；XML 分片登记到静态构建清单；排除重定向及禁止索引页面</td></tr></tbody></table>
+<p>| <a href="i18n/">i18n</a>                                                                                                                          | 按内容版本／语言／命名空间输出消息                   |</p>
+<p>正式静态页面的服务器选择见 <a href="../lib/entity-graph.ts">entity-graph.ts</a> 和构建环境。新增资源类型同时核对 <a href="../lib/resource-route.ts">resource-route.ts</a>、导航、页面载荷和 Worker。</p>
+<p><code>[locale]/community/charts/</code> 为跨服社区谱面集合；动态 UUID 实体及其 <code>chart/</code> 播放器子页共用 <code>[locale]/community/charts/[id].astro</code> 生成的 <code>_</code> 空壳，规范地址由共享静态文档查找和开发重写映射；旧 <code>[locale]/charts/</code> 与服务器前缀地址重定向，查询参数保留。实体和指定版本播放数据由带权限的社区 API 读取。</p>
+<p>GBP／世界计划的 <code>/{locale}/community/{gbp|sekai}/songs/{id}/</code> 与 <code>/stories/{section}/{id}/</code> 独立实体映射到 <code>provider-static</code> 文档；旧 <code>?song=</code>／<code>?story=</code>／<code>?card=</code> 地址重定向，集合与实体分别渲染。核心构建提供 <code>_</code> 独立实体壳，缺少供应方预生成详情时从规范地址读取对应实体与目录。</p>
+<p>开发模式重写及生产静态文档打包见 <a href="../middleware.ts">middleware</a> 与 <a href="../server/L2-2.md">Server</a>。布局规则见 <a href="../components/L2-2.md">Components</a>。验证按 <a href="../../docs/DEV_GUIDE.md">开发导航</a>。</p>
+<p><code>[server]/[locale]/growth-data.json.ts</code> 提供养成详情按需读取的固定版本材料与技能资料。
+图鉴与 <a href="%5Bserver%5D/%5Blocale%5D/stories/index.astro">故事集合根路径</a> 提供分类入口；故事类型仍在 <code>stories/[mode]</code> 阅读。<a href="%5Blocale%5D/tools.astro">tools</a> 与 <a href="%5Blocale%5D/games.astro">games</a> 提供工具和游戏入口，社区根路径提供入口，推荐动态在 <code>/community/feeds/</code>，帖子和用户页的动态回退也复用 feeds 文档。首页和这些入口共用 <a href="../components/DestinationHub.astro">DestinationHub</a>。</p>
+<p>社区故事与社区谱面共用跨服层级：<code>[locale]/community/stories/</code> 集合、<code>[id]/</code> 详情及 <code>[id]/story/</code> 阅读／播放，通过 <code>_</code> 实体壳响应动态 UUID。旧服务器前缀及 <code>community-stories</code> 链接保留查询参数重定向。<a href="%5Blocale%5D/story-editor/create.astro">故事制作器</a> 对齐谱面制作器的 <code>editor/create</code> 入口，通过构建版本绑定同源 Altair iframe。</p>
+<ul>
+<li><a href="%5Blocale%5D/saves.astro">本机存档</a>：浏览器和原生壳共用的本机存档工作区入口。</li>
+</ul>

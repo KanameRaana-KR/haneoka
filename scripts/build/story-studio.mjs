@@ -19,8 +19,10 @@ const args = [
   "-e",
   `require("node:child_process").execFileSync("pnpm",["run",["@haneoka/vega","@haneoka/altair"].includes(process.env.PNPM_PACKAGE_NAME)?"build:core":"build"],{stdio:"inherit"})`,
 ];
-if (!process.argv.includes("--prepared")) execFileSync("pnpm", args, { cwd: root, stdio: "inherit" });
-execFileSync("pnpm", ["--filter", "@haneoka/altair-app", "build"], { cwd: root, stdio: "inherit" });
+const pnpmBin = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const pnpmOpts = { cwd: root, stdio: "inherit", shell: process.platform === "win32" };
+if (!process.argv.includes("--prepared")) execFileSync(pnpmBin, args, pnpmOpts);
+execFileSync(pnpmBin, ["--filter", "@haneoka/altair-app", "build"], pnpmOpts);
 const source = resolve(root, ".dependencies/altair/apps/studio/dist"),
   output = resolve(root, ".generated-public/story-studio");
 mkdirSync(output, { recursive: true });

@@ -1,0 +1,1 @@
+const i="(max-width: 599px)",s="(min-width: 1200px)",h=t=>typeof matchMedia=="function"&&matchMedia(t).matches;function m(t,n){if(typeof matchMedia!="function")return()=>{};const e=matchMedia(t),a=c=>n(c.matches);return e.addEventListener("change",a),()=>e.removeEventListener("change",a)}export{i as C,s as E,h as m,m as w};

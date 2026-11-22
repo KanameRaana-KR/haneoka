@@ -1,0 +1,29 @@
+# haneoka
+
+> Unofficial BanG Dream! Our Notes database. Read public character profiles, cards, songs, events, gacha and stories in Markdown.
+
+Each document gives the canonical web address. Start with a catalog to find individual entries.
+
+## Japan
+
+- [English](https://siriustrack.site/jp/en/llms.txt)
+- [日本語](https://siriustrack.site/jp/ja/llms.txt)
+- [한국어](https://siriustrack.site/jp/ko/llms.txt)
+- [中文（中国）](https://siriustrack.site/jp/zh-CN/llms.txt)
+- [中文（台灣）](https://siriustrack.site/jp/zh-TW/llms.txt)
+
+## International
+
+- [English](https://siriustrack.site/intl/en/llms.txt)
+- [日本語](https://siriustrack.site/intl/ja/llms.txt)
+- [한국어](https://siriustrack.site/intl/ko/llms.txt)
+- [中文（中国）](https://siriustrack.site/intl/zh-CN/llms.txt)
+- [中文（台灣）](https://siriustrack.site/intl/zh-TW/llms.txt)
+
+## Site guides
+
+- [English](https://siriustrack.site/en/llms.txt)
+- [日本語](https://siriustrack.site/ja/llms.txt)
+- [한국어](https://siriustrack.site/ko/llms.txt)
+- [中文（中国）](https://siriustrack.site/zh-CN/llms.txt)
+- [中文（台灣）](https://siriustrack.site/zh-TW/llms.txt)

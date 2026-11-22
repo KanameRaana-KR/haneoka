@@ -190,7 +190,7 @@ def publish_index(server: str, store) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--server", choices=["jp", "intl"], action="append")
-    parser.add_argument("--bucket", default="hotdori-assets")
+    parser.add_argument("--bucket", default="siriustrack")
     args = parser.parse_args()
     store = R2Store(SimpleNamespace(r2_bucket=args.bucket), concurrency=6)
     for server in args.server or ["jp", "intl"]:

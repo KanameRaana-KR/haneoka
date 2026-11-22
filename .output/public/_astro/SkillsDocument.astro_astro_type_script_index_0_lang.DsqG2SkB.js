@@ -1,0 +1,64 @@
+import{u as T}from"./unpublished-state.CJcNYaJQ.js";import{i as U}from"./lit-element.Bc_VOJIm.js";import{b as c,A as f}from"./lit-html.DhDqt3I2.js";import{c as N,f as q}from"./client.BYho01b_.js";import{l as z,h as k}from"./catalog.CfAhzaok.js";import{l as S}from"./resource-route.BR5kLHYo.js";import{r as B}from"./page-data.CoUysx63.js";import{s as O}from"./app-bar.CQ9Fi2qQ.js";import{c as P,r as A}from"./browse.DDmaNTY0.js";import{a as H,i as _}from"./content-release.T5Qse4HZ.js";import{S as x}from"./spoiler-content.Ir13N6R6.js";import{b as D,a as M,c as j,v as F}from"./collection-view.C0Iap7sK.js";import{b as $,f as V}from"./controls.BCr1YKFS.js";import{f as C}from"./facet.DHanKGGX.js";import{t as w}from"./tile.DFwS0rEz.js";import{i as g}from"./icon.BSt8MVsq.js";import{L as G,n as I}from"./lazy-images.2hwWuBaG.js";import{r as K,p as v}from"./pane.sVrWZuBp.js";import{c as W}from"./card-tile.smVGznBh.js";/* empty css                        */import{d as Y}from"./card-rarity.Bj6Ka5JZ.js";import{a as J}from"./catalog-relationships.Cko_f-QP.js";import{d as Q}from"./detail-layout.D3-kIBfL.js";import{e as X}from"./entity-discussion.DASzzmbm.js";import"./image-gallery.jDvuAiLp.js";import{a as Z}from"./state.Ck623oKm.js";import"./temporary-public-routing.BsxzEC6B.js";import"./interface-route.C7eSW2gB.js";import"./locales.DtpYD_uK.js";import"./release-server.j-atVW2C.js";import"./document-url.BFFpyWb5.js";import"./document-address.dywC0kBs.js";import"./content-policy-browser.sJlSzFcH.js";import"./content-request.DQ1rIr6o.js";import"./user-roles.BBzq6-HC.js";import"./request-scope.N4apwAcW.js";import"./image-dimensions.lsZdhmjC.js";import"./scrollable-tabs.B0s0LWO4.js";import"./hydrate-workspace.CqzYTlrg.js";import"./Base.astro_astro_type_script_index_3_lang.DZLFYlg0.js";import"./facet-order.wTm3gWmx.js";import"./checkbox.zvQH7SV2.js";import"./delegate.qnlMPWy4.js";import"./md-focus-ring.BFbx9fcs.js";import"./ripple.DU62FgSE.js";import"./animation.BI-yjTPx.js";import"./form-label-activation.C-ZPsH8j.js";import"./redispatch-event.Dod3cBoe.js";import"./validator.Cz1PymV-.js";import"./checkbox-validator.BT-H8ZRB.js";import"./loading-progress.C8Gf5z9T.js";import"./preload-helper.BlTxHScW.js";import"./loading-indicator.dXh2gc3V.js";import"./circular-progress.Derl8Va3.js";import"./progress.BYlJSdrk.js";/* empty css                        */import"./overlay.CAlyPMjs.js";import"./card-growth.Cv0vV_gt.js";import"./site-community.DYGqCiYM.js";import"./comments-state.BFUQ1tZ9.js";/* empty css                        *//* empty css                      */import"./modal.D-GY7Vdy.js";/* empty css                         *//* empty css                        *//* empty css                        */import"./linear-progress.Du-QQIqh.js";const b=y=>`${y.family}-${y.id}`,E={leader:"catalog.cards.fields.leaderSkill",live:"catalog.cards.fields.liveSkill",gekisou:"catalog.cards.fields.gekisouSkill",support:"catalog.cards.fields.supportSkill",gekisouSupport:"catalog.cards.fields.gekisouSupportSkill"},ee=Object.keys(E),te="skills";class ie extends U{static properties={locale:{type:String},entityId:{type:String,attribute:"entity-id"},query:{state:!0},facets:{state:!0},includeUnlinked:{state:!0},view:{state:!0},filtersOpen:{state:!0}};data;lazyImages=new G;releaseSearch;policyChanged=()=>this.requestUpdate();constructor(){super(),this.locale="en",this.entityId="",this.query="",this.facets={family:[],effect:[]},this.includeUnlinked=!1,this.view="grid",this.filtersOpen=!1}createRenderRoot(){return this}preparePage(t,i,s=""){this.data=t,this.locale=i,this.entityId=s}renderStaticChrome(){this.entityId||this.syncSearch()}connectedCallback(){if(super.connectedCallback(),addEventListener(x,this.policyChanged),this.data=B(this),this.removeAttribute("data-prerendered"),this.replaceChildren(),this.entityId)return;const t=new URLSearchParams(location.search),i=this.data?.entries.find(s=>s.key===t.get("skill"));if(i){location.replace(this.skillHref(i));return}this.query=t.get("q")??"",this.view=D(t.get("view")),this.includeUnlinked=t.get("unlinked")==="1",this.facets={family:t.getAll("filter.family"),effect:t.getAll("filter.effect")},this.syncSearch()}syncSearch(){this.releaseSearch=O(te,{value:this.query,label:this.text("common.actions.search","Search"),onInput:t=>{this.query=t,this.sync()}})}disconnectedCallback(){removeEventListener(x,this.policyChanged),this.releaseSearch?.(),P(),this.lazyImages.disconnect(),super.disconnectedCallback()}sync(){const t=new URLSearchParams(location.search);for(const i of["q","view","unlinked","filter.family","filter.effect"])t.delete(i);this.query&&t.set("q",this.query),this.view!=="grid"&&t.set("view",this.view),this.includeUnlinked&&t.set("unlinked","1");for(const i of["family","effect"])for(const s of this.facets[i])t.append(`filter.${i}`,s);history.replaceState(history.state,"",`${location.pathname}${t.size?`?${t}`:""}`)}text(t,i,s){return N(this.locale,t,i,s)}name(t){return z(t,this.locale)}familyLabel(t){return this.text(E[t],t)}effectNames(t){return t.effects.map(i=>this.name(i.name)||String(i.id)).join(" / ")}levelRange(t){const i=t.levels.map(r=>r.level);if(!i.length)return"—";const s=Math.min(...i),o=Math.max(...i);return s===o?`Lv.${s}`:`Lv.${s}–${o}`}lines(t){const i=this.name(t).trim();return i?i.split(/\r?\n/u).map((s,o)=>o?c`
+            <br />
+            ${s}
+          `:s):this.text("common.states.unavailable","Unavailable")}skillTitle(t){return c`
+      <span lang=${k(t.name,this.locale).locale}>${this.name(t.name)||t.key}</span>
+    `}skillHref(t){return S({server:this.data.server,locale:this.locale,kind:"skills",id:b(t)})}toggle(t,i){const s=this.facets[t];this.facets={...this.facets,[t]:s.includes(i)?s.filter(o=>o!==i):[...s,i]},this.sync()}updated(){this.lazyImages.observe(this)}render(){const t=this.data;if(!t)return f;if(this.entityId){const e=t.entries.find(l=>b(l)===this.entityId);return e&&!H("skills",e,this.entityId)?T(this.locale):e?this.renderDetail(t,e):f}const i=t.entries.filter(e=>(this.includeUnlinked||e.cards.length>0)&&_("skills",e,b(e))),s=this.query.trim().normalize("NFKC").toLocaleLowerCase(this.locale),o=(e,l)=>(l==="family"||!this.facets.family.length||this.facets.family.includes(e.family))&&(l==="effect"||!this.facets.effect.length||e.effects.some(n=>this.facets.effect.includes(String(n.id))))&&(!s||`${e.id} ${this.name(e.name)} ${this.effectNames(e)} ${e.levels.map(n=>this.name(n.description)).join(" ")}`.normalize("NFKC").toLocaleLowerCase(this.locale).includes(s)),r=i.filter(e=>o(e)),d=new Map;for(const e of i)for(const l of e.effects)d.set(String(l.id),l.name);const u=e=>this.text("catalog.skills.cardCount","{count} cards",{count:e.cards.length}),a=this.view==="grid"?c`
+            <div class="collection collection--item">
+              ${r.map(e=>w({kind:"item",title:this.skillTitle(e),subtitle:this.familyLabel(e.family),label:this.name(e.name)||e.key,image:e.image,fit:"contain",aspectRatio:1,placeholder:g("bolt",32),onImageError:I,href:this.skillHref(e)}))}
+            </div>
+          `:this.view==="list"?M(r.map(e=>({id:e.key,title:this.skillTitle(e),subtitle:[this.familyLabel(e.family),this.effectNames(e)].filter(Boolean).join(" / "),image:e.image,trailing:e.cards.length?u(e):f,href:this.skillHref(e)}))):j(this.text("catalog.cards.fields.skills","Skills"),[this.text("common.fields.title","Title"),this.text("catalog.fields.type","Type"),this.text("catalog.fields.effects","Effects"),this.text("common.fields.level","Level"),this.text("navigation.cards","Cards"),"ID"],r.map(e=>[c`
+                  <a class="table-entity" href=${this.skillHref(e)}>
+                    <img src=${e.image} alt="" loading="lazy" decoding="async" />
+                    ${this.skillTitle(e)}
+                  </a>
+                `,this.familyLabel(e.family),this.effectNames(e)||"—",this.levelRange(e),e.cards.length.toLocaleString(this.locale),e.id])),h=this.text("common.actions.remove","Remove"),m=[...this.facets.family.map(e=>$(this.familyLabel(e),h,()=>this.toggle("family",e))),...this.facets.effect.map(e=>$(this.name(d.get(e))||e,h,()=>this.toggle("effect",e))),...this.includeUnlinked?[$(this.text("catalog.skills.includeUnlinked","Include skills without cards"),h,()=>{this.includeUnlinked=!1,this.sync()})]:[]];return A({kind:"skills",count:{value:r.length,label:r.length===i.length?"":`/ ${i.length.toLocaleString(this.locale)}`},modes:F(this.locale,this.view,e=>{this.view=e,this.sync()}),applied:m,results:r.length?a:Z({title:this.text("common.states.empty","No results"),icon:"search_off"}),filters:{label:this.text("common.actions.filter","Filter"),open:this.filtersOpen,count:this.facets.family.length+this.facets.effect.length+Number(this.includeUnlinked),closeLabel:this.text("common.actions.close","Close"),resetLabel:this.text("common.actions.reset","Reset"),onOpen:()=>this.filtersOpen=!0,onClose:()=>this.filtersOpen=!1,onReset:()=>{this.facets={family:[],effect:[]},this.includeUnlinked=!1,this.sync()},body:c`
+          ${C(this.text("catalog.fields.type","Type"),this.locale,ee.map(e=>({value:e,label:this.familyLabel(e),count:i.filter(l=>l.family===e&&o(l,"family")).length})).filter(e=>e.count||this.facets.family.includes(e.value)),this.facets.family,e=>this.toggle("family",e))}
+          ${C(this.text("catalog.fields.effects","Effects"),this.locale,[...d].map(([e,l])=>({value:e,label:this.name(l)||e,count:i.filter(n=>n.effects.some(p=>String(p.id)===e)&&o(n,"effect")).length})),this.facets.effect,e=>this.toggle("effect",e))}
+          ${V({label:this.text("catalog.skills.includeUnlinked","Include skills without cards"),selected:this.includeUnlinked,onToggle:()=>{this.includeUnlinked=!this.includeUnlinked,this.sync()}})}
+        `}})}renderDetail(t,i){const s=this.name(i.name)||i.key,o=a=>S({server:t.server,locale:this.locale,kind:a.kind,id:a.id}),r=i.cards.filter(a=>a.kind==="member-cards"),d=i.cards.filter(a=>a.kind==="support-cards"),u=(a,h)=>c`
+      <div class=${`collection collection--${h}`}>
+        ${a.map(m=>{const e=J(m.characterIds,this.locale,R=>t.characters[String(R)]),l=k(m.name,this.locale),n=Y(m.rarity),p=["","Red","Blue","Green","Yellow","Purple"][m.attribute]??"",L=p?this.text(q(p.toLowerCase()),p):"";return w({...W({kind:h,title:l.text||m.id,titleLanguage:l.locale,subtitle:e.content,adornment:e.adornment,label:[l.text,e.label,n,L].filter(Boolean).join(" / "),image:m.image,attributeIcon:t.marks[`CardType-${p}.png`]||"",attributeLabel:L,rarityIcon:t.marks[`RarityIconCenter_${n}.png`]||"",rarityLabel:n}),aspectRatio:h==="member"?"3 / 4":"16 / 9",onImageError:I,href:o(m)})})}
+      </div>
+    `;return K({title:s,titleLanguage:k(i.name,this.locale).locale,kind:"skill",style:"--detail-media-size:200px",open:!0,page:!0,hideHeader:!0,backLabel:this.text("common.actions.back","Back"),onClose:()=>{},body:Q(i.image?c`
+              <image-gallery
+                .images=${[{id:i.key,source:i.image,label:s}]}
+                locale=${this.locale}
+                title=${s}
+              ></image-gallery>
+            `:f,c`
+          ${v(this.text("common.actions.details","Details"),g("info",20),c`
+              <dl class="spec-list spec-list--split">
+                <div>
+                  <dt>${this.text("catalog.fields.type","Type")}</dt>
+                  <dd>${this.familyLabel(i.family)}</dd>
+                </div>
+                <div>
+                  <dt>${this.text("catalog.fields.effects","Effects")}</dt>
+                  <dd>${this.effectNames(i)||"—"}</dd>
+                </div>
+                <div>
+                  <dt>${this.text("common.fields.level","Level")}</dt>
+                  <dd>${this.levelRange(i)}</dd>
+                </div>
+                <div>
+                  <dt>ID</dt>
+                  <dd>${i.id}</dd>
+                </div>
+              </dl>
+            `)}
+          ${i.levels.length?v(this.text("catalog.cards.fields.effectsByLevel","Effects by level"),g("trending_up",20),c`
+                    <dl class="spec-list">
+                      ${i.levels.map(a=>c`
+                          <div>
+                            <dt>Lv.${a.level}</dt>
+                            <dd lang=${k(a.description,this.locale).locale}>
+                              ${this.lines(a.description)}
+                            </dd>
+                          </div>
+                        `)}
+                    </dl>
+                  `,i.levels.length):f}
+          ${r.length?v(this.text("navigation.memberCards","Members"),g("person",20),u(r,"member"),r.length):f}
+          ${d.length?v(this.text("navigation.supportCards","Support cards"),g("photo_library",20),u(d,"support"),d.length):f}
+        `,{comments:X({type:"skills",id:b(i),server:t.server,locale:this.locale,title:s}),hasMedia:!!i.image,placement:"media"})})}}typeof customElements<"u"&&!customElements.get("skills-workspace")&&customElements.define("skills-workspace",ie);

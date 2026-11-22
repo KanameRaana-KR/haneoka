@@ -19,6 +19,11 @@ const policyCache = new WeakMap<object, { expiresAt: number; value: ContentVisib
 export async function readContentVisibility(env: Env, fresh = false): Promise<ContentVisibilitySettings> {
   const cached = policyCache.get(env.ASSET_BUCKET);
   if (!fresh && cached && cached.expiresAt > Date.now()) return cached.value;
+  if (!env.DB) {
+    const value = { policy: DEFAULT_VISIBILITY_POLICY, version: 1, updatedAt: 0 };
+    policyCache.set(env.ASSET_BUCKET, { value, expiresAt: Date.now() + 60_000 });
+    return value;
+  }
   const row = await env.DB.withSession("first-primary")
     .prepare("SELECT policy, version, updated_at AS updatedAt FROM content_visibility_setting WHERE id = 1")
     .first<{ policy: string; version: number; updatedAt: number }>();

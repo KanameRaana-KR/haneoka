@@ -455,7 +455,7 @@ def apply_plan(envelope: dict[str, Any], remote: Remote) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("collect", "offline-plan", "apply"))
-    parser.add_argument("--bucket", default="hotdori-assets")
+    parser.add_argument("--bucket", default="siriustrack")
     parser.add_argument("--origin", default="https://haneoka.org")
     parser.add_argument("--grace-days", type=int, default=7)
     parser.add_argument("--retain-roots", type=int, default=3)

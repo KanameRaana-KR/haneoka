@@ -12,7 +12,7 @@ import { isContentListed } from "../content-release";
 export function pinCrossCatalogValue(value: unknown, identity: CrossCatalogIdentity): unknown {
   if (typeof value === "string" && /^\/(?:assets|runtime|objects)\//u.test(value)) {
     const url = new URL(value, "https://asset.invalid");
-    if (!new RegExp(`^/(?:assets|runtime|objects)/${identity.server}/`, "u").test(url.pathname))
+    if (!/^\/(?:assets|runtime|objects)\/(?:jp|intl)\//u.test(url.pathname))
       throw new Error("Cross-server media source mismatch");
     url.searchParams.set("release", identity.releaseId);
     return url.pathname + url.search;

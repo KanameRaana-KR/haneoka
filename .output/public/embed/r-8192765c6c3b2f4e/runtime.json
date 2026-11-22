@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "runtimeId": "haneoka-cubism-web-runtime-v2-8afd14f10d67",
+  "module": {
+    "url": "/cubism-runtime/haneoka-cubism-web-runtime-v2-8afd14f10d67/vega-cubism-web-runtime.mjs?v=8afd14f10d6781e7a1da86771f6cb5c9f726f603522755b1153636ab99dfe4bc",
+    "bytes": 558847,
+    "sha256": "8afd14f10d6781e7a1da86771f6cb5c9f726f603522755b1153636ab99dfe4bc"
+  },
+  "core": {
+    "cubismCoreUrl": {
+      "url": "/Core/live2dcubismcore.js?v=25ae938cb4fe282ce189b357bcc97e603d1e1f7ec78bf04150d401c23cdc792f",
+      "bytes": 207155,
+      "sha256": "25ae938cb4fe282ce189b357bcc97e603d1e1f7ec78bf04150d401c23cdc792f"
+    },
+    "cubismWasmUrl": {
+      "url": "/Core/live2dcubismcore.wasm?v=e4f6273770ff3b56e2e4830931239ad78e6ece43221cdbb33cfc463e701ad9ab",
+      "bytes": 115280,
+      "sha256": "e4f6273770ff3b56e2e4830931239ad78e6ece43221cdbb33cfc463e701ad9ab"
+    },
+    "cubism2CoreUrl": {
+      "url": "/Core/live2d.min.js?v=e4ea1f18bdd44b65394ffd5a1bab16982e88757d45134d1bd0737c8a6b3ddd08",
+      "bytes": 129056,
+      "sha256": "e4ea1f18bdd44b65394ffd5a1bab16982e88757d45134d1bd0737c8a6b3ddd08"
+    },
+    "motionSyncCoreUrl": {
+      "url": "/Core/CRI/live2dcubismmotionsynccore.min.js?v=60e2a8ba9b422a0f8a3d7e066739352e9b903cc1011339984ad922e80a3cd19a",
+      "bytes": 563022,
+      "sha256": "60e2a8ba9b422a0f8a3d7e066739352e9b903cc1011339984ad922e80a3cd19a"
+    }
+  }
+}

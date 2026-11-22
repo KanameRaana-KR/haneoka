@@ -116,7 +116,7 @@ const curated: Record<HubId, HubTile[]> = {
     tile("/catalog/assets", "landscape", 6, 3, 1),
     tile("/catalog/help", "landscape", 6, 3),
   ],
-  games: [tile("/sonolus", "sonolus", 6, 3), tile("/song-puzzle", "puzzle", 3, 3), tile("/song-guess", "guess", 3, 3)],
+  games: [tile("/song-puzzle", "puzzle", 6, 3), tile("/song-guess", "guess", 6, 3)],
   community: [
     {
       ...tile("/community/feeds", "discussion", 6, 3),
@@ -168,20 +168,20 @@ export function hubTiles(id: HubId): HubTile[] {
   return [...featured, ...remaining.map((entry) => tile(entry.route, "icon", 3, 2))];
 }
 export function homeHubTiles(): HubTile[] {
-  const all = (["tools", "catalog", "stories", "games", "community"] as const).flatMap(hubTiles);
+  const all = (["tools", "catalog", "stories", "games"] as const).flatMap(hubTiles);
   const priorities = [
-    "/team-builder",
     "/stamp-maker",
     "/catalog/member-cards",
     "/catalog/songs",
     "/catalog/stories/band",
-    "/sonolus",
-    "/community/feeds",
   ];
   const ordered = [
-    ...priorities.map((route) => all.find((entry) => entry.route === route)!),
+    ...priorities.flatMap((route) => {
+      const match = all.find((entry) => entry.route === route);
+      return match ? [match] : [];
+    }),
     ...all.filter((entry) => !priorities.includes(entry.route)),
-  ];
+  ].filter((entry) => entry && !["/team-builder", "/sonolus"].includes(entry.route) && !entry.route.startsWith("/community"));
   const used = new Set<string>();
   return ordered.filter((entry) => {
     if (used.has(entry.route)) return false;

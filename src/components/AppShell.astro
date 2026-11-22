@@ -56,7 +56,7 @@ const navigation = PRIMARY_DESTINATIONS.map((destination) => ({
 }));
 const utilities = UTILITY_DESTINATIONS;
 const hasSearch = Astro.slots.has("search");
-const searchIndexable = !["/account", "/admin", "/settings", "/search", "/community"].some(prefix => route === prefix || route.startsWith(`${prefix}/`));
+const searchIndexable = !["/account", "/admin", "/settings", "/search", "/community", "/track"].some(prefix => route === prefix || route.startsWith(`${prefix}/`));
 const publicForums = await publicForumNavigation(locale, route);
 const publicForumsDataId = "shell-public-forums";
 ---
@@ -109,9 +109,9 @@ const publicForumsDataId = "shell-public-forums";
           <Icon name="menu_open" />
         </span>
       </button>
-      <a class="nav__brand" href={navigationHref("/")} aria-label="haneoka">
+      <a class="nav__brand" href={navigationHref("/")} aria-label="SiriusTrack">
         <img src="/favicon.svg" width="28" height="28" alt="" />
-        <span>haneoka</span>
+        <span>SiriusTrack</span>
       </a>
     </div>
 

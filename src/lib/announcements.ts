@@ -72,7 +72,7 @@ export function safeAnnouncementUrl(value: string, image = false): string {
     const url = new URL(candidate);
     if (url.protocol !== "https:" && url.protocol !== "http:") return "";
     if (url.username || url.password) return "";
-    if (image && url.hostname === "haneoka.org" && mediaPath.test(url.pathname) && !url.search && !url.hash)
+    if (image && (url.hostname === "siriustrack.site" || url.hostname === "haneoka.org") && mediaPath.test(url.pathname) && !url.search && !url.hash)
       return url.pathname;
     return url.href;
   } catch {

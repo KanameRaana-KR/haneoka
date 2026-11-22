@@ -7,7 +7,15 @@ import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { isLocale } from "@haneoka/i18n";
+import { communityPagesEnabled } from "../lib/site-community.ts";
 import { staticDocumentLookupPath } from "../lib/static-documents.ts";
+
+function serverBuiltLocally(server: string | number | undefined): boolean {
+  if (server === undefined) return true;
+  const s = String(server);
+  if (s !== "jp" && s !== "intl") return true;
+  return fs.existsSync(path.join(process.cwd(), "data", "servers", s, "current.json"));
+}
 
 /** Build complete page families independently without blocking other releases. */
 export function staticPageGroupEnabled(group: "provider" | "assets"): boolean {
@@ -110,6 +118,10 @@ function recordPaths(sourcePattern: string, paths: readonly StaticBuildPath[]): 
 
 /** Enumerate complete props first; only the renderer's final path list is sharded. */
 export function staticBuildPaths<T extends StaticBuildPath>(sourcePattern: string, paths: T[]): T[] {
+  if (!communityPagesEnabled() && (sourcePattern.includes("/community/") || sourcePattern.includes("sonolus.astro"))) {
+    return [];
+  }
+  paths = paths.filter((entry) => serverBuiltLocally(entry.params.server));
   if (process.env.STATIC_BUILD_PHASE === "prepare") {
     recordPaths(sourcePattern, paths);
     return [];

@@ -1,0 +1,1 @@
+const n=e=>e.replace(/(?:^|\s*[-·/|]\s*)haneoka(?:\s*-\s*BanG Dream! Our Notes.*)?$/u,"").trim();function o(e,t){const a=n(e).replace(/\s*\/\s*/gu," - ");return`${a&&a!=="haneoka"?`${a} - `:""}haneoka - ${t}`}export{o as f};

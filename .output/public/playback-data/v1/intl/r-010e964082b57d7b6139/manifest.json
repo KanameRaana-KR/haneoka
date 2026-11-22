@@ -1,0 +1,44 @@
+{
+  "schema": "haneoka-chart-playback-data-v1",
+  "server": "intl",
+  "releaseId": "r-010e964082b57d7b6139",
+  "sourceId": "v86-b5344e34086c-5c1ffa29717c-mb9c8db85fbbe-na64da166",
+  "packs": {
+    "0": {
+      "url": "/playback-data/v1/intl/r-010e964082b57d7b6139/band-0.ccf977abf47011d74e08.json",
+      "sha256": "ccf977abf47011d74e08b61f93dba77cf98716b168e7bfb10c084237cc3c892f",
+      "bytes": 751658,
+      "records": 208
+    },
+    "1": {
+      "url": "/playback-data/v1/intl/r-010e964082b57d7b6139/band-1.0f21574f057577770cad.json",
+      "sha256": "0f21574f057577770cadb2c4a7bca436551ad632c0158337713e98e3dfd6b8e1",
+      "bytes": 2003100,
+      "records": 221
+    },
+    "2": {
+      "url": "/playback-data/v1/intl/r-010e964082b57d7b6139/band-2.92dfb35d5705d5c305ca.json",
+      "sha256": "92dfb35d5705d5c305ca83c8d299192fbfde302a4626619fc5e1aae105bd5457",
+      "bytes": 811438,
+      "records": 221
+    },
+    "3": {
+      "url": "/playback-data/v1/intl/r-010e964082b57d7b6139/band-3.7655faeef76cc7a4a537.json",
+      "sha256": "7655faeef76cc7a4a537a3ff956132b7a288648fb0fddc690b84b08d97c26f94",
+      "bytes": 895211,
+      "records": 231
+    },
+    "4": {
+      "url": "/playback-data/v1/intl/r-010e964082b57d7b6139/band-4.ad3f235c79dbb0cd8830.json",
+      "sha256": "ad3f235c79dbb0cd8830358a57a8db5c489fd14d3af29e37169b9a19d27b26ca",
+      "bytes": 774953,
+      "records": 219
+    },
+    "5": {
+      "url": "/playback-data/v1/intl/r-010e964082b57d7b6139/band-5.a38811a66913fa22ab70.json",
+      "sha256": "a38811a66913fa22ab70b660c0a6c6c15570baf95a381bf819d9af08577e21bd",
+      "bytes": 798912,
+      "records": 229
+    }
+  }
+}

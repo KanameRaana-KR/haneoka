@@ -9,6 +9,7 @@ import { t } from "../i18n/messages";
 import { languageFlags } from "../i18n/language-flags";
 import { DATE_CHOICES, formatDate, formatTime, type DateChoiceKey, type DatePreferences } from "../lib/date-format";
 import { BIRTHDAY, SEASONS, birthdaySeed, characterSeed, seasonSeed } from "../lib/themes";
+import { hasLocalStaticCatalog } from "../lib/static-catalog-source";
 import { themeCharacters } from "../server/theme-characters";
 import "../styles/components/accordion.css";
 import "../styles/settings.css";
@@ -17,7 +18,8 @@ import { svg as bilibiliSvg } from "@thesvg/icons/bilibili";
 
 const { locale } = Astro.props as { locale: Locale };
 const characters = await themeCharacters(locale);
-const bandIcon = (id: number) => `/assets/jp/Assets/AddressableResources/Band/${id}/band_small_Icon.png`;
+const bandServer = hasLocalStaticCatalog("jp") ? "jp" : "intl";
+const bandIcon = (id: number) => `/assets/${bandServer}/Assets/AddressableResources/Band/${id}/band_small_Icon.png`;
 const title = t(locale, "navigation.settings", "Settings");
 const bilibiliBody = bilibiliSvg
   .replace(/^<svg[^>]*>/, "")

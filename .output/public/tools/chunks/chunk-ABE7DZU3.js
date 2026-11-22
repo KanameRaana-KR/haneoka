@@ -1,0 +1,1 @@
+var t=e=>e==="jp"||e==="intl",o=e=>/^\/(?:(?:(?:jp|intl)\/)?(?:ja|en|ko|zh-CN|zh-TW)\/)?player-profile(?:\/|\.html$|$)/u.test(e),n=e=>e==="/catalog/anon-tokyo"||e.startsWith("/catalog/anon-tokyo/")||o(e);export{t as a,n as b};

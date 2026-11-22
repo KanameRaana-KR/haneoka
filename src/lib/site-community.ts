@@ -7,8 +7,7 @@ export const COMMUNITY_VISIBILITY_ATTRIBUTE = "data-community-pages";
 export const DEFAULT_COMMUNITY_HIDDEN_HOSTS = "haneoka.com";
 
 export const communityPagesEnabled = (_hostname: string, _hiddenHosts = DEFAULT_COMMUNITY_HIDDEN_HOSTS): boolean => {
-  // return !_hiddenHosts.split(",").some((host) => host.trim() === _hostname);
-  return true;
+  return false;
 };
 
 export function communityVisible(): boolean {
@@ -21,7 +20,7 @@ export function isCommunityPagePath(pathname: string): boolean {
   if (pathname.startsWith("/playlist-static/")) return true;
   const path = pathname.replace(/^\/(?:(?:[a-z0-9-]+)\/)?(?:ja|en|zh-TW|zh-CN|ko)(?=\/|$)/u, "");
   if (/^\/community(?:\/|$)/u.test(path)) return true;
-  return /^\/(?:charts|community-stories|playlist-static)(?:\/|$)/u.test(path);
+  return /^\/(?:charts|community-stories|playlist-static|sonolus)(?:\/|$)/u.test(path);
 }
 
 export function isCommunityCommentRequest(url: URL): boolean {
@@ -36,17 +35,20 @@ export function isCommunityCommentRequest(url: URL): boolean {
 }
 
 export function communityVisibilityCss(origin: string): string {
-  const communityLinks = [...new Set(["", "https://haneoka.org", "https://haneoka.com", origin])].flatMap((base) =>
-    ["", "/ja", "/en", "/zh-TW", "/zh-CN", "/ko"].flatMap((locale) => {
-      const prefix = `${base}${locale}/community`;
-      return [`a[href="${prefix}"]`, `a[href^="${prefix}?"]`, `a[href^="${prefix}/"]`];
-    }),
+  const hiddenSlugs = ["community", "account", "team-builder", "join", "sponsor", "download", "catalog/events/tracker", "sonolus"];
+  const communityLinks = [...new Set(["", "https://siriustrack.site", "https://haneoka.org", "https://haneoka.com", origin])].flatMap((base) =>
+    ["", "/ja", "/en", "/zh-TW", "/zh-CN", "/ko", "/jp/ja", "/jp/en", "/jp/zh-TW", "/jp/zh-CN", "/jp/ko", "/intl/ja", "/intl/en", "/intl/zh-TW", "/intl/zh-CN", "/intl/ko"].flatMap((locale) =>
+      hiddenSlugs.flatMap((slug) => {
+        const prefix = `${base}${locale}/${slug}`;
+        return [`a[href="${prefix}"]`, `a[href="${prefix}/"]`, `a[href^="${prefix}?"]`, `a[href^="${prefix}/"]`];
+      }),
+    ),
   );
   return `@layer utilities {
 html[${COMMUNITY_VISIBILITY_ATTRIBUTE}="0"] :is(
 [data-community-feature], [data-destination="community"],
 .home-board__slot--community, .detail-layout__comments, entity-comments, entity-discussion, #entity-comments,
-a[href$="#entity-comments"], ${communityLinks.join(",")}
+a[href$="#entity-comments"], a[href^="sonolus://"], [data-sonolus], button:has(.sonolus-icon), a:has(.sonolus-icon), ${communityLinks.join(",")}
 ) { display: none !important; }
 }`;
 }

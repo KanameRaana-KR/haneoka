@@ -55,7 +55,7 @@ function publicationObjects(value) {
 async function previousPublication() {
   if (
     process.env.STATIC_DOCUMENT_BUCKET &&
-    process.env.STATIC_DOCUMENT_BUCKET !== "hotdori-assets" &&
+    process.env.STATIC_DOCUMENT_BUCKET !== "siriustrack" &&
     !process.env.STATIC_DOCUMENT_PREVIOUS_ORIGIN
   ) {
     if (!dryRun) console.log("Custom static bucket has no previous origin; upload the complete current reference set");
@@ -344,7 +344,7 @@ try {
     );
   else {
     const account = process.env.CLOUDFLARE_ACCOUNT_ID;
-    const bucket = process.env.STATIC_DOCUMENT_BUCKET || "hotdori-assets";
+    const bucket = process.env.STATIC_DOCUMENT_BUCKET || "siriustrack";
     if (!account || !process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY)
       throw new Error("Static document publication requires the configured R2 credentials");
     if (!/^[a-z0-9][a-z0-9.-]*$/u.test(bucket) || !/^[a-f0-9]{32}$/u.test(account))

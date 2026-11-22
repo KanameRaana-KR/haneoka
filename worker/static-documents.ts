@@ -181,6 +181,14 @@ async function packedContent(
   }
   const end = location.offset + location.gzipBytes - 1;
   const response = await env.ASSETS.fetch(new Request(url, { headers: { Range: `bytes=${location.offset}-${end}` } }));
+  if (response.status === 404 && env.ASSET_BUCKET) {
+    await response.body?.cancel();
+    const r2Key = `web-static${url.pathname}`;
+    const r2Obj = await env.ASSET_BUCKET.get(r2Key, { range: { offset: location.offset, length: location.gzipBytes } });
+    if (r2Obj?.body) {
+      return { body: r2Obj.body, size: location.gzipBytes };
+    }
+  }
   if (!response.body || ![200, 206].includes(response.status))
     throw new Error(`Static content pack returned ${response.status}`);
   if (response.status === 206) {

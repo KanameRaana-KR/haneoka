@@ -1,0 +1,1 @@
+const u=new Intl.Collator("en",{numeric:!0,sensitivity:"variant"}),i=r=>typeof r.id=="number"&&Number.isFinite(r.id)?String(r.id):typeof r.id=="string"&&r.id.trim()?r.id:/^\d+$/.test(r.value)?r.value:void 0;function s(r){return[...r].sort((n,d)=>{const t=i(n),e=i(d);return t===void 0?e===void 0?0:1:e===void 0?-1:u.compare(t,e)})}export{s as o};

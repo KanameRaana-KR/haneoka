@@ -1,0 +1,2 @@
+import{a as t,b as x}from"./chunks/chunk-VSNRYQO5.js";import"./chunks/chunk-OFT32ZL4.js";import{a as o,d as r,e,f,g as m,h as p}from"./chunks/chunk-ETLDGRHX.js";import"./chunks/chunk-7SZRL6FY.js";export{o as EmbedHttpError,r as createEmbedLoader,x as createHaneokaBranding,m as fileDataSource,p as fileResourceResolver,t as haneokaDataSource,f as httpDataSource,e as memoryDataSource};
+/*! For license information please see core.js.LEGAL.txt */

@@ -27,7 +27,7 @@ from publish.r2 import R2Store, _current_pointer, _current_release_manifest, IMM
 
 
 def store_config(server="jp"):
-    return SimpleNamespace(id=server, r2_bucket=os.environ.get("R2_BUCKET", "hotdori-assets"))
+    return SimpleNamespace(id=server, r2_bucket=os.environ.get("R2_BUCKET", "siriustrack"))
 
 
 def vector(store):

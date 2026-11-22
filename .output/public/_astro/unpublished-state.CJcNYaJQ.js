@@ -1,0 +1,1 @@
+import{c as i}from"./client.BYho01b_.js";import{a as e}from"./state.Ck623oKm.js";function n(t){return e({title:i(t,"common.states.unpublished"),body:i(t,"common.states.unpublishedDescription"),icon:"visibility_off"})}export{n as u};

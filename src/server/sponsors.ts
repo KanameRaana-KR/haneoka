@@ -203,7 +203,12 @@ async function kofi(origin: string): Promise<Row[]> {
   ];
 }
 
+import { communityPagesEnabled } from "../lib/site-community";
+
 async function load(): Promise<SponsorList> {
+  if (!communityPagesEnabled()) {
+    return { updatedAt: new Date().toISOString(), sources: [], active: [], past: [], masked: [] };
+  }
   const env = process.env;
   const origin = env.STATIC_OPERATION_ORIGIN || env.STATIC_CATALOG_ORIGIN || "https://haneoka.org";
   const tiers = await siteTiers(origin);

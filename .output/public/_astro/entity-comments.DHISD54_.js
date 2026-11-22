@@ -1,0 +1,1 @@
+function i(n){return"/api/v1/community/entity-threads/"+encodeURIComponent(n.entityType)+"/"+encodeURIComponent(n.originalId)}function t(n){const e=/^(regular|limited|event)-mission-([1-9]\d*)$/u.exec(n);return e?{type:`missions-${e[1]}`,id:e[2]}:void 0}export{i as e,t as m};

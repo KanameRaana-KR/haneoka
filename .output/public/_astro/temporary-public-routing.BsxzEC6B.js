@@ -1,0 +1,1 @@
+const o=["jp","intl"],s=t=>t==="jp"||t==="intl",a=t=>/^\/(?:(?:(?:jp|intl)\/)?(?:ja|en|ko|zh-CN|zh-TW)\/)?player-profile(?:\/|\.html$|$)/u.test(t),e=t=>t==="/catalog/anon-tokyo"||t.startsWith("/catalog/anon-tokyo/")||a(t);export{o as P,e as a,s as i};

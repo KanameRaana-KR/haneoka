@@ -14,9 +14,13 @@ import {
 import {
   fetchStaticApplicationJson,
   fetchStaticReleaseJson,
+  hasOwnLocalStaticCatalog,
   staticCatalogRelease,
   type StaticCatalogRelease,
 } from "../lib/static-catalog-source";
+import { openReleaseCatalog } from "./release-catalog";
+import { chartAssets } from "../../worker/chart-assets";
+import { CAMERA_MANAGER_SOURCE, cameraManagerDescriptor } from "../../worker/retired-game-files";
 
 export const CHART_PLAYBACK_DATA_SCHEMA = "haneoka-chart-playback-data-v1";
 export const CHART_PLAYBACK_DATA_ELEMENT_ID = "chart-playback-data";
@@ -70,6 +74,25 @@ async function runtimeJson(relative: string, release: StaticCatalogRelease): Pro
 }
 
 async function bandAssets(release: StaticCatalogRelease, band: number): Promise<HaneokaChartAssets> {
+  if (hasOwnLocalStaticCatalog(release.server)) {
+    const local = openReleaseCatalog(release.server);
+    const tree = local.readReleaseJson("metadata/source-index/tree.json");
+    const projected = await chartAssets(
+      tree,
+      async (source) => {
+        const rel = `metadata/sources/${source}.json`;
+        if (local.releaseEntry(rel)) return local.readReleaseJson(rel);
+        if (source === CAMERA_MANAGER_SOURCE) return cameraManagerDescriptor();
+        return null;
+      },
+      band,
+    );
+    return {
+      schema: "haneoka-chart-assets-v1",
+      identity: { server: release.server, releaseId: release.releaseId, sourceId: release.sourceId },
+      ...projected,
+    } as HaneokaChartAssets;
+  }
   const assets = (await fetchStaticApplicationJson(
     `/api/v1/servers/${encodeURIComponent(release.server)}/chart-assets?projection=${HANEOKA_CHART_ASSETS_PROJECTION}&bandId=${band}`,
     release,

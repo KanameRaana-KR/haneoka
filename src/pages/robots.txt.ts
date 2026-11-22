@@ -30,7 +30,7 @@ export const GET: APIRoute = () =>
 User-agent: *
 Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
-Sitemap: https://haneoka.org/sitemap.xml
+Sitemap: https://siriustrack.site/sitemap.xml
 `,
     { headers: { "content-type": "text/plain; charset=utf-8" } },
   );

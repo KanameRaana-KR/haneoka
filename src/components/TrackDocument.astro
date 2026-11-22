@@ -1,0 +1,1140 @@
+---
+import Base from "../layouts/Base.astro";
+import AppShell from "./AppShell.astro";
+import Icon from "./Icon.astro";
+import type { Locale } from "../i18n/locales";
+
+const { locale } = Astro.props as { locale: Locale };
+const title = "Track";
+
+const UI_TEXT: Record<string, Record<string, string>> = {
+  ko: {
+    ftkTab: "FromTokyo",
+    biliTab: "Bilibili (GetList)",
+    mastersTab: "Raw Masters",
+    diffTab: "Master Diffs",
+    onlyOpenMasters: "마스터 열림만 보기",
+    branch: "Branch",
+    slot: "Slot",
+    assetVersion: "Asset Version",
+    masterVersion: "Master Version",
+    cdnMount: "CDN",
+    updatedAt: "Updated",
+    refresh: "새로고침",
+    open: "Open",
+    restricted: "Restricted",
+    mounted: "Mounted",
+    stage: "Stage",
+    loading: "실시간 브랜치 상태를 불러오는 중…",
+    empty: "표시할 항목이 없습니다.",
+    tablesChanged: "개 테이블 변경",
+    viewRaw: "원본 JSON",
+    masterBuild: "마스터 빌드",
+    tableSearch: "테이블 검색 (예: Music, Card, Text…)",
+    rowSearch: "테이블 내 ID / 텍스트 필터…",
+    tablesUnit: "개 테이블",
+    rowsUnit: "행",
+    matchedUnit: "일치",
+    copyJson: "복사",
+    copiedJson: "복사됨!",
+    openRawTab: "원본 열기 ↗",
+    downloadJson: ".json 다운로드",
+    showAllRows: "전체 행 모두 펼치기",
+    truncatedNote: "빠른 렌더링을 위해 상위 200행만 미리보기로 표시 중입니다.",
+    selectTablePrompt: "좌측 목록에서 열람할 마스터 테이블을 선택하세요.",
+  },
+  ja: {
+    ftkTab: "FromTokyo",
+    biliTab: "Bilibili (GetList)",
+    mastersTab: "Raw Masters",
+    diffTab: "Master Diffs",
+    onlyOpenMasters: "公開マスターのみ表示",
+    branch: "Branch",
+    slot: "Slot",
+    assetVersion: "Asset Version",
+    masterVersion: "Master Version",
+    cdnMount: "CDN",
+    updatedAt: "Updated",
+    refresh: "更新",
+    open: "Open",
+    restricted: "Restricted",
+    mounted: "Mounted",
+    stage: "Stage",
+    loading: "ブランチ状態を読み込み中…",
+    empty: "データがありません。",
+    tablesChanged: "テーブル変更",
+    viewRaw: "生JSON",
+    masterBuild: "マスタービルド",
+    tableSearch: "テーブル検索 (Music, Card, Text…)",
+    rowSearch: "ID / テキスト絞り込み…",
+    tablesUnit: "テーブル",
+    rowsUnit: "行",
+    matchedUnit: "一致",
+    copyJson: "コピー",
+    copiedJson: "コピー済",
+    openRawTab: "生JSON ↗",
+    downloadJson: ".json 保存",
+    showAllRows: "全行を表示",
+    truncatedNote: "高速表示のため先頭200行を表示しています。",
+    selectTablePrompt: "左のリストからテーブルを選択してください。",
+  },
+  en: {
+    ftkTab: "FromTokyo",
+    biliTab: "Bilibili (GetList)",
+    mastersTab: "Raw Masters",
+    diffTab: "Master Diffs",
+    onlyOpenMasters: "Open MasterData only",
+    branch: "Branch",
+    slot: "Slot",
+    assetVersion: "Asset Version",
+    masterVersion: "Master Version",
+    cdnMount: "CDN",
+    updatedAt: "Updated",
+    refresh: "Refresh",
+    open: "Open",
+    restricted: "Restricted",
+    mounted: "Mounted",
+    stage: "Stage",
+    loading: "Loading live branch matrix…",
+    empty: "No records available.",
+    tablesChanged: "tables changed",
+    viewRaw: "Raw JSON",
+    masterBuild: "Master Build",
+    tableSearch: "Filter tables (e.g. Music, Card, Text…)",
+    rowSearch: "Filter rows by ID or text…",
+    tablesUnit: "tables",
+    rowsUnit: "rows",
+    matchedUnit: "matched",
+    copyJson: "Copy",
+    copiedJson: "Copied!",
+    openRawTab: "Raw ↗",
+    downloadJson: "Download .json",
+    showAllRows: "Show all rows",
+    truncatedNote: "Showing first 200 rows for instant rendering.",
+    selectTablePrompt: "Select a MasterData table from the sidebar.",
+  },
+  "zh-TW": {
+    ftkTab: "FromTokyo",
+    biliTab: "Bilibili (GetList)",
+    mastersTab: "Raw Masters",
+    diffTab: "Master Diffs",
+    onlyOpenMasters: "僅顯示公開主資料",
+    branch: "Branch",
+    slot: "Slot",
+    assetVersion: "Asset Version",
+    masterVersion: "Master Version",
+    cdnMount: "CDN",
+    updatedAt: "Updated",
+    refresh: "重新整理",
+    open: "Open",
+    restricted: "Restricted",
+    mounted: "Mounted",
+    stage: "Stage",
+    loading: "正在載入分支狀態…",
+    empty: "暫無資料。",
+    tablesChanged: "個資料表變更",
+    viewRaw: "原始 JSON",
+    masterBuild: "主資料版本",
+    tableSearch: "搜尋資料表 (Music, Card, Text…)",
+    rowSearch: "依 ID 或文字篩選…",
+    tablesUnit: "個資料表",
+    rowsUnit: "筆",
+    matchedUnit: "符合",
+    copyJson: "複製",
+    copiedJson: "已複製",
+    openRawTab: "開啟原始檔 ↗",
+    downloadJson: "下載 .json",
+    showAllRows: "展開全部資料列",
+    truncatedNote: "為確保流暢度，目前預覽前 200 筆資料。",
+    selectTablePrompt: "請從左側選擇主資料表。",
+  },
+  "zh-CN": {
+    ftkTab: "FromTokyo",
+    biliTab: "Bilibili (GetList)",
+    mastersTab: "Raw Masters",
+    diffTab: "Master Diffs",
+    onlyOpenMasters: "仅显示公开主数据",
+    branch: "Branch",
+    slot: "Slot",
+    assetVersion: "Asset Version",
+    masterVersion: "Master Version",
+    cdnMount: "CDN",
+    updatedAt: "Updated",
+    refresh: "刷新",
+    open: "Open",
+    restricted: "Restricted",
+    mounted: "Mounted",
+    stage: "Stage",
+    loading: "正在加载分支状态…",
+    empty: "暂无数据。",
+    tablesChanged: "个数据表变更",
+    viewRaw: "原始 JSON",
+    masterBuild: "主数据构建",
+    tableSearch: "搜索数据表 (Music, Card, Text…)",
+    rowSearch: "按 ID 或文本筛选…",
+    tablesUnit: "个数据表",
+    rowsUnit: "行",
+    matchedUnit: "匹配",
+    copyJson: "复制",
+    copiedJson: "已复制",
+    openRawTab: "打开原始文件 ↗",
+    downloadJson: "下载 .json",
+    showAllRows: "展开全部记录",
+    truncatedNote: "为保证响应速度，当前预览前 200 行记录。",
+    selectTablePrompt: "请从左侧选择要查看的主数据表。",
+  },
+};
+const labels = UI_TEXT[locale] ?? UI_TEXT.en;
+---
+
+<Base locale={locale} route="/track" title={title} noindex>
+  <AppShell locale={locale} route="/track" title={title}>
+    <div class="page track-page" data-track-root data-labels={JSON.stringify(labels)}>
+      <div class="track-toolbar">
+        <div class="tabs" role="tablist" aria-label="Track sections">
+          <button class="tab is-active" type="button" role="tab" aria-selected="true" data-track-tab="ftk">
+            <Icon name="dns" size={20} />
+            <span>{labels.ftkTab}</span>
+            <span class="chip__count" data-track-count="ftk"></span>
+            <span class="tab__indicator" aria-hidden="true"></span>
+          </button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-track-tab="bili">
+            <Icon name="public" size={20} />
+            <span>{labels.biliTab}</span>
+            <span class="chip__count" data-track-count="bili"></span>
+            <span class="tab__indicator" aria-hidden="true"></span>
+          </button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-track-tab="masters">
+            <Icon name="article" size={20} />
+            <span>{labels.mastersTab}</span>
+            <span class="chip__count" data-track-count="masters"></span>
+            <span class="tab__indicator" aria-hidden="true"></span>
+          </button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-track-tab="diffs">
+            <Icon name="history" size={20} />
+            <span>{labels.diffTab}</span>
+            <span class="chip__count" data-track-count="diffs"></span>
+            <span class="tab__indicator" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="track-toolbar__meta">
+          <label class="track-filter-toggle">
+            <input type="checkbox" checked data-track-only-open />
+            <span>{labels.onlyOpenMasters}</span>
+          </label>
+          <span class="track-stamp" data-track-generated></span>
+          <button class="chip" type="button" data-track-refresh>
+            <Icon name="refresh" size={18} />
+            <span class="chip__label">{labels.refresh}</span>
+          </button>
+        </div>
+      </div>
+
+      <section data-track-panel="ftk" role="tabpanel">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="is-sticky">{labels.branch}</th>
+                <th class="is-compact">{labels.slot}</th>
+                <th>{labels.assetVersion}</th>
+                <th>{labels.masterVersion}</th>
+                <th class="is-compact">{labels.cdnMount}</th>
+                <th class="is-compact">{labels.updatedAt}</th>
+              </tr>
+            </thead>
+            <tbody data-track-tbody="ftk">
+              <tr><td colspan="6" class="track-empty">{labels.loading}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section data-track-panel="bili" role="tabpanel" hidden>
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="is-sticky">{labels.branch}</th>
+                <th class="is-compact">{labels.slot}</th>
+                <th>{labels.assetVersion}</th>
+                <th>{labels.masterVersion}</th>
+                <th class="is-compact">{labels.cdnMount}</th>
+                <th class="is-compact">{labels.updatedAt}</th>
+              </tr>
+            </thead>
+            <tbody data-track-tbody="bili">
+              <tr><td colspan="6" class="track-empty">{labels.loading}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section data-track-panel="masters" role="tabpanel" hidden>
+        <div class="track-master-shell">
+          <div class="track-master-bar">
+            <label class="track-master-select-wrap">
+              <span class="track-stamp">{labels.masterBuild}</span>
+              <select class="track-select track-mono" data-master-select></select>
+            </label>
+            <span class="chip chip--static chip--tonal" data-master-summary hidden>
+              <span class="chip__label" data-master-summary-text></span>
+            </span>
+          </div>
+
+          <div class="track-master-grid">
+            <aside class="track-master-sidebar">
+              <input
+                type="search"
+                class="track-input"
+                placeholder={labels.tableSearch}
+                data-master-table-filter
+              />
+              <div class="track-table-list" data-master-table-list>
+                <div class="track-empty">{labels.loading}</div>
+              </div>
+            </aside>
+
+            <div class="track-master-viewer">
+              <div class="track-viewer-head">
+                <div class="track-branch-cell">
+                  <strong class="track-mono" data-viewer-title>—</strong>
+                  <span class="track-stamp" data-viewer-stats></span>
+                </div>
+                <div class="track-viewer-actions">
+                  <input
+                    type="search"
+                    class="track-input track-input--compact"
+                    placeholder={labels.rowSearch}
+                    data-master-row-filter
+                  />
+                  <button type="button" class="chip" data-viewer-copy disabled>
+                    <span class="chip__label" data-viewer-copy-label>{labels.copyJson}</span>
+                  </button>
+                  <a class="chip" target="_blank" rel="noopener noreferrer" data-viewer-raw-link hidden>
+                    <span class="chip__label">{labels.openRawTab}</span>
+                  </a>
+                  <a class="chip chip--tonal" data-viewer-dl-link hidden>
+                    <span class="chip__label">{labels.downloadJson}</span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="track-trunc-banner" data-viewer-trunc hidden>
+                <span data-viewer-trunc-text>{labels.truncatedNote}</span>
+                <button type="button" class="track-diff-link" data-viewer-show-all>{labels.showAllRows}</button>
+              </div>
+
+              <pre class="track-json-pre track-mono" data-viewer-pre>{labels.selectTablePrompt}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-track-panel="diffs" role="tabpanel" hidden>
+        <div class="track-diff-list" data-track-diffs>
+          <div class="surface">{labels.loading}</div>
+        </div>
+      </section>
+    </div>
+  </AppShell>
+</Base>
+
+<style is:global>
+  .track-page {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+  }
+  .track-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .track-toolbar__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .track-filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding-inline: 12px;
+    border-radius: var(--md-sys-shape-corner-small);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-on-surface);
+    font: var(--md-sys-typescale-label-large-weight) var(--md-sys-typescale-label-large-size) / 1 var(--app-font);
+    cursor: pointer;
+    user-select: none;
+  }
+  .track-filter-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--md-sys-color-primary);
+    margin: 0;
+    cursor: pointer;
+  }
+  .track-stamp {
+    color: var(--md-sys-color-on-surface-variant);
+    font: var(--md-sys-typescale-label-medium-weight) var(--md-sys-typescale-label-medium-size) /
+      var(--md-sys-typescale-label-medium-line-height) var(--app-font);
+    font-variant-numeric: tabular-nums;
+  }
+  .track-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.84rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .track-subhash {
+    display: block;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    margin-top: 2px;
+  }
+  .track-branch-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .track-master-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .track-raw-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding-inline: 9px;
+    border-radius: var(--md-sys-shape-corner-small);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    font: var(--md-sys-typescale-label-small-weight) var(--md-sys-typescale-label-small-size) / 1 var(--app-font);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .track-raw-btn:hover {
+    filter: brightness(0.96);
+  }
+  .track-tier {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding-inline: 8px;
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    font: var(--md-sys-typescale-label-small-weight) var(--md-sys-typescale-label-small-size) / 1 var(--app-font);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--md-sys-color-surface-container-highest);
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .track-tier[data-tier="production"] {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+  }
+  .track-tier[data-tier="staging"],
+  .track-tier[data-tier="canary"] {
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+  }
+  .track-tier[data-tier="review"],
+  .track-tier[data-tier="ope"] {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+  }
+  .track-diff-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--md-sys-color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    text-align: start;
+  }
+  .track-empty {
+    color: var(--md-sys-color-on-surface-variant);
+    text-align: center;
+    padding: 32px 16px !important;
+  }
+  .track-master-shell {
+    display: grid;
+    gap: 12px;
+  }
+  .track-master-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-large);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-surface);
+  }
+  .track-master-select-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 360px;
+  }
+  .track-select,
+  .track-input {
+    height: 36px;
+    padding-inline: 12px;
+    border-radius: var(--md-sys-shape-corner-small);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-on-surface);
+    font: inherit;
+  }
+  .track-select {
+    flex: 1 1 320px;
+    max-width: 100%;
+  }
+  .track-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .track-input--compact {
+    width: 220px;
+    height: 32px;
+    font-size: 0.84rem;
+  }
+  .track-master-grid {
+    display: grid;
+    grid-template-columns: minmax(250px, 310px) minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .track-master-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .track-master-sidebar {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    border-radius: var(--md-sys-shape-corner-large);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-surface);
+  }
+  .track-table-list {
+    max-height: 68vh;
+    overflow-y: auto;
+    display: grid;
+    gap: 2px;
+  }
+  .track-table-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    text-align: start;
+  }
+  .track-table-btn:hover {
+    background: var(--md-sys-color-surface-container);
+  }
+  .track-table-btn.is-active {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    font-weight: 600;
+  }
+  .track-table-btn__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.81rem;
+  }
+  .track-table-btn__meta {
+    font-size: 0.72rem;
+    opacity: 0.78;
+    white-space: nowrap;
+  }
+  .track-master-viewer {
+    display: grid;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: var(--md-sys-shape-corner-large);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-surface);
+    min-width: 0;
+  }
+  .track-viewer-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .track-viewer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .track-trunc-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: var(--md-sys-shape-corner-small);
+    background: var(--md-sys-color-surface-container);
+    font-size: 0.82rem;
+  }
+  .track-json-pre {
+    margin: 0;
+    padding: 14px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-surface-container-lowest, var(--md-sys-color-surface-container-low));
+    border: 1px solid var(--md-sys-color-outline-variant);
+    max-height: 66vh;
+    overflow: auto;
+    font-size: 0.79rem;
+    line-height: 1.48;
+    white-space: pre;
+    tab-size: 2;
+  }
+  .track-diff-list {
+    display: grid;
+    gap: 12px;
+  }
+  .track-diff-card {
+    padding: 16px 20px;
+    border-radius: var(--md-sys-shape-corner-large);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: var(--md-sys-color-surface);
+    display: grid;
+    gap: 12px;
+  }
+  .track-diff-card.is-highlighted {
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--md-sys-color-primary) 25%, transparent);
+  }
+  .track-diff-card__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .track-diff-tables {
+    display: grid;
+    gap: 8px;
+  }
+  .track-diff-table-row {
+    padding: 10px 12px;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background: var(--md-sys-color-surface-container-low);
+    display: grid;
+    gap: 6px;
+  }
+  .track-diff-table-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .track-diff-highlights {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.82rem;
+    display: grid;
+    gap: 2px;
+  }
+</style>
+
+<script>
+  function initTrackPage() {
+    const root = document.querySelector<HTMLElement>("[data-track-root]");
+    if (!root || root.dataset.trackBound === "1") return;
+    root.dataset.trackBound = "1";
+
+    const ASSET_ORIGIN = "https://assets.siriustrack.site";
+    const labels = JSON.parse(root.dataset.labels || "{}");
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-track-tab]"));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-track-panel]"));
+    const onlyOpenCheckbox = root.querySelector<HTMLInputElement>("[data-track-only-open]");
+
+    const masterSelect = root.querySelector<HTMLSelectElement>("[data-master-select]");
+    const masterSummary = root.querySelector<HTMLElement>("[data-master-summary]");
+    const masterSummaryText = root.querySelector<HTMLElement>("[data-master-summary-text]");
+    const tableFilterInput = root.querySelector<HTMLInputElement>("[data-master-table-filter]");
+    const tableListEl = root.querySelector<HTMLElement>("[data-master-table-list]");
+    const viewerTitle = root.querySelector<HTMLElement>("[data-viewer-title]");
+    const viewerStats = root.querySelector<HTMLElement>("[data-viewer-stats]");
+    const rowFilterInput = root.querySelector<HTMLInputElement>("[data-master-row-filter]");
+    const copyBtn = root.querySelector<HTMLButtonElement>("[data-viewer-copy]");
+    const copyLabel = root.querySelector<HTMLElement>("[data-viewer-copy-label]");
+    const rawLink = root.querySelector<HTMLAnchorElement>("[data-viewer-raw-link]");
+    const dlLink = root.querySelector<HTMLAnchorElement>("[data-viewer-dl-link]");
+    const truncBanner = root.querySelector<HTMLElement>("[data-viewer-trunc]");
+    const showAllBtn = root.querySelector<HTMLButtonElement>("[data-viewer-show-all]");
+    const viewerPre = root.querySelector<HTMLElement>("[data-viewer-pre]");
+
+    const selectTab = (id: string) => {
+      for (const btn of tabs) {
+        const active = btn.dataset.trackTab === id;
+        btn.classList.toggle("is-active", active);
+        btn.setAttribute("aria-selected", String(active));
+      }
+      for (const panel of panels) {
+        panel.hidden = panel.dataset.trackPanel !== id;
+      }
+    };
+
+    for (const btn of tabs) {
+      btn.addEventListener("click", () => selectTab(btn.dataset.trackTab || "ftk"));
+    }
+
+    const esc = (v: unknown) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+    const fmtBytes = (b: number) => {
+      if (!b || b < 1024) return `${b || 0} B`;
+      if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+      return `${(b / 1024 / 1024).toFixed(2)} MB`;
+    };
+
+    let rawFtkRows: any[] = [];
+    let rawBiliRows: any[] = [];
+    let cachedDiffs: any[] = [];
+    let availableMasters: any[] = [];
+    const manifestCache = new Map<string, any>();
+    const blobCache = new Map<string, any>();
+
+    let currentMasterHash = "";
+    let currentManifest: any = null;
+    let currentTableName = "";
+    let currentTableRows: any = null;
+    let showAllCurrentRows = false;
+    let lastRenderedJsonText = "";
+
+    const extractHash = (mv: string) => {
+      const s = String(mv || "").trim();
+      const tail = s.includes("/") ? s.split("/").pop()! : s;
+      return /^[0-9a-f]{32}$/.test(tail) ? tail : "";
+    };
+
+    const findDiffIndex = (masterVer: string) => {
+      if (!masterVer) return -1;
+      const token = masterVer.includes("/") ? masterVer.split("/").pop()! : masterVer;
+      if (token.length < 8) return -1;
+      return cachedDiffs.findIndex(
+        (d) => String(d.newMaster || "").includes(token) || String(d.id || "").includes(token.slice(0, 12)),
+      );
+    };
+
+    const renderBranchRows = (allRows: any[], mode: "ftk" | "bili") => {
+      const onlyOpen = Boolean(onlyOpenCheckbox?.checked);
+      const rows = onlyOpen ? allRows.filter((r) => Boolean(r.masterAccessible)) : allRows;
+      const tbody = root.querySelector<HTMLElement>(`[data-track-tbody="${mode}"]`);
+      const counter = root.querySelector<HTMLElement>(`[data-track-count="${mode}"]`);
+      if (counter) {
+        counter.textContent = allRows.length
+          ? onlyOpen
+            ? `(${rows.length}/${allRows.length})`
+            : `(${allRows.length})`
+          : "";
+      }
+      if (!tbody) return;
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="track-empty">${esc(labels.empty)}</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows
+        .map((r) => {
+          const mv = String(r.masterVersion || "—");
+          const mh = String(r.masterHash || extractHash(mv));
+          const diffIdx = findDiffIndex(mv);
+          const mvText =
+            diffIdx >= 0
+              ? `<button type="button" class="track-diff-link track-mono" data-jump-diff="${diffIdx}">${esc(mv)}</button>`
+              : `<span class="track-mono">${esc(mv)}</span>`;
+          const rawBtn =
+            r.masterAccessible && mh
+              ? `<button type="button" class="track-raw-btn" data-open-master="${esc(mh)}">${esc(labels.viewRaw)}</button>`
+              : "";
+          const subHash =
+            mode === "ftk" && (r.androidHash || r.iosHash)
+              ? `<span class="track-subhash">A:${esc(r.androidHash || "—")} · I:${esc(r.iosHash || "—")}</span>`
+              : "";
+          const badgeLabel = r.masterAccessible
+            ? mode === "ftk"
+              ? labels.open
+              : labels.mounted
+            : mode === "ftk"
+              ? labels.restricted
+              : labels.stage;
+          const badgeClass = r.masterAccessible ? "chip chip--static chip--tonal" : "chip chip--static";
+          return `<tr>
+            <td class="is-sticky">
+              <div class="track-branch-cell">
+                <strong>${esc(r.branch)}</strong>
+                <span class="track-tier" data-tier="${esc(r.tier)}">${esc(r.tier)}</span>
+              </div>
+            </td>
+            <td class="is-compact"><span class="track-mono">#${esc(r.slot)}</span></td>
+            <td>
+              <span class="track-mono">${esc(r.assetVersion || "—")}</span>
+              ${subHash}
+            </td>
+            <td><div class="track-master-cell">${mvText}${rawBtn}</div></td>
+            <td class="is-compact"><span class="${badgeClass}"><span class="chip__label">${esc(badgeLabel)}</span></span></td>
+            <td class="is-compact"><span class="track-stamp">${esc(r.updatedAt || "—")}</span></td>
+          </tr>`;
+        })
+        .join("");
+
+      tbody.querySelectorAll<HTMLButtonElement>("[data-jump-diff]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.jumpDiff);
+          selectTab("diffs");
+          const card = root.querySelector<HTMLElement>(`[data-diff-index="${idx}"]`);
+          root.querySelectorAll(".track-diff-card.is-highlighted").forEach((el) => el.classList.remove("is-highlighted"));
+          if (card) {
+            card.classList.add("is-highlighted");
+            card.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        });
+      });
+
+      tbody.querySelectorAll<HTMLButtonElement>("[data-open-master]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mh = btn.dataset.openMaster || "";
+          if (!mh) return;
+          selectTab("masters");
+          void selectMasterBuild(mh);
+        });
+      });
+    };
+
+    const renderViewerContent = () => {
+      if (!viewerPre || !viewerTitle || !viewerStats) return;
+      if (!currentTableName || currentTableRows === null) {
+        viewerTitle.textContent = "—";
+        viewerStats.textContent = "";
+        viewerPre.textContent = labels.selectTablePrompt || "";
+        if (copyBtn) copyBtn.disabled = true;
+        if (rawLink) rawLink.hidden = true;
+        if (dlLink) dlLink.hidden = true;
+        if (truncBanner) truncBanner.hidden = true;
+        return;
+      }
+
+      const q = (rowFilterInput?.value || "").trim().toLowerCase();
+      const isArr = Array.isArray(currentTableRows);
+      const totalLen = isArr ? currentTableRows.length : 1;
+      let filtered: any = currentTableRows;
+      if (isArr && q) {
+        filtered = currentTableRows.filter((item: any) => JSON.stringify(item).toLowerCase().includes(q));
+      }
+      const matchLen = Array.isArray(filtered) ? filtered.length : 1;
+      const limit = 200;
+      const isTruncated = Array.isArray(filtered) && !showAllCurrentRows && filtered.length > limit;
+      const displayPayload = isTruncated ? filtered.slice(0, limit) : filtered;
+
+      viewerTitle.textContent = `${currentTableName}.json`;
+      viewerStats.textContent = q
+        ? `${labels.matchedUnit} ${matchLen.toLocaleString()} / ${totalLen.toLocaleString()} ${labels.rowsUnit}`
+        : `${totalLen.toLocaleString()} ${labels.rowsUnit}`;
+
+      lastRenderedJsonText = JSON.stringify(filtered, null, 2);
+      viewerPre.textContent = isTruncated ? JSON.stringify(displayPayload, null, 2) : lastRenderedJsonText;
+
+      if (truncBanner) truncBanner.hidden = !isTruncated;
+      if (copyBtn) copyBtn.disabled = false;
+      if (rawLink && currentMasterHash) {
+        rawLink.href = `/api/track/masters/${currentMasterHash}/${currentTableName}.json`;
+        rawLink.hidden = false;
+      }
+      if (dlLink && currentMasterHash) {
+        dlLink.href = `/api/track/masters/${currentMasterHash}/${currentTableName}.json?download=1`;
+        dlLink.hidden = false;
+      }
+    };
+
+    const renderTableSidebar = () => {
+      if (!tableListEl) return;
+      const tables: any[] = currentManifest?.tables || [];
+      const q = (tableFilterInput?.value || "").trim().toLowerCase();
+      const list = q ? tables.filter((t) => String(t.name || "").toLowerCase().includes(q)) : tables;
+      if (!list.length) {
+        tableListEl.innerHTML = `<div class="track-empty">${esc(labels.empty)}</div>`;
+        return;
+      }
+      tableListEl.innerHTML = list
+        .map((t) => {
+          const active = t.name === currentTableName ? " is-active" : "";
+          return `<button type="button" class="track-table-btn${active}" data-select-table="${esc(t.name)}">
+            <span class="track-table-btn__name track-mono">${esc(t.name)}</span>
+            <span class="track-table-btn__meta track-mono">${Number(t.rows || 0).toLocaleString()} · ${fmtBytes(Number(t.bytes || 0))}</span>
+          </button>`;
+        })
+        .join("");
+
+      tableListEl.querySelectorAll<HTMLButtonElement>("[data-select-table]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tname = btn.dataset.selectTable || "";
+          if (tname) void loadMasterTable(tname);
+        });
+      });
+    };
+
+    const loadMasterTable = async (tableName: string) => {
+      if (!currentManifest || !currentMasterHash) return;
+      const entry = (currentManifest.tables || []).find((t: any) => t.name === tableName);
+      if (!entry) return;
+      currentTableName = tableName;
+      showAllCurrentRows = false;
+      renderTableSidebar();
+      if (viewerPre) viewerPre.textContent = labels.loading || "Loading…";
+
+      let rows = blobCache.get(entry.blob);
+      if (!rows) {
+        const urls = [
+          `${ASSET_ORIGIN}/${entry.blob}`,
+          `/api/track/masters/${currentMasterHash}/${tableName}.json`,
+        ];
+        for (const u of urls) {
+          try {
+            const res = await fetch(u, { headers: { Accept: "application/json" } });
+            if (res.ok) {
+              rows = await res.json();
+              blobCache.set(entry.blob, rows);
+              break;
+            }
+          } catch {}
+        }
+      }
+      currentTableRows = rows ?? [];
+      renderViewerContent();
+    };
+
+    const selectMasterBuild = async (mh: string) => {
+      if (!mh) return;
+      currentMasterHash = mh;
+      if (masterSelect && masterSelect.value !== mh) {
+        masterSelect.value = mh;
+      }
+      let mf = manifestCache.get(mh);
+      if (!mf) {
+        const urls = [
+          `/api/track/masters/${mh}/manifest.json`,
+          `${ASSET_ORIGIN}/track/masters/${mh}/manifest.json`,
+        ];
+        for (const u of urls) {
+          try {
+            const res = await fetch(u, { headers: { Accept: "application/json" } });
+            if (res.ok) {
+              mf = await res.json();
+              manifestCache.set(mh, mf);
+              break;
+            }
+          } catch {}
+        }
+      }
+      if (!mf) return;
+      currentManifest = mf;
+      if (masterSummary && masterSummaryText) {
+        masterSummaryText.textContent = `${Number(mf.tableCount || 0)} ${labels.tablesUnit} · ${fmtBytes(Number(mf.totalBytes || 0))}`;
+        masterSummary.hidden = false;
+      }
+      renderTableSidebar();
+      const tables: any[] = mf.tables || [];
+      const keep = currentTableName && tables.some((t) => t.name === currentTableName) ? currentTableName : "";
+      const preferred =
+        keep ||
+        (tables.find((t) => t.name === "MasterLiveMusic")?.name ??
+          tables.find((t) => t.name === "MasterMemberCard")?.name ??
+          tables[0]?.name ??
+          "");
+      if (preferred) {
+        await loadMasterTable(preferred);
+      }
+    };
+
+    const renderMastersDropdown = (masters: any[]) => {
+      const counter = root.querySelector<HTMLElement>(`[data-track-count="masters"]`);
+      if (counter) counter.textContent = masters.length ? `(${masters.length})` : "";
+      if (!masterSelect) return;
+      if (!masters.length) {
+        masterSelect.innerHTML = `<option value="">${esc(labels.empty)}</option>`;
+        return;
+      }
+      // Sort newest / pre-release FTK & Bilibili builds to top
+      const sorted = [...masters].sort((a, b) => {
+        if (a.region !== b.region) return a.region === "FromTokyo" ? -1 : 1;
+        return String(b.releaseVersion || "").localeCompare(String(a.releaseVersion || ""), undefined, { numeric: true });
+      });
+      masterSelect.innerHTML = sorted
+        .map((m) => {
+          const br = Array.isArray(m.branches) && m.branches.length ? ` — ${m.branches.slice(0, 3).join(", ")}` : "";
+          const ver = m.releaseVersion ? `${m.releaseVersion} · ` : "";
+          return `<option value="${esc(m.masterHash)}">[${esc(m.region)}] ${esc(ver)}${esc(m.masterHash.slice(0, 12))}${esc(br)}</option>`;
+        })
+        .join("");
+
+      const initial = currentMasterHash && sorted.some((m) => m.masterHash === currentMasterHash)
+        ? currentMasterHash
+        : sorted[0]?.masterHash;
+      if (initial) {
+        void selectMasterBuild(initial);
+      }
+    };
+
+    const renderDiffs = (diffs: any[]) => {
+      const box = root.querySelector<HTMLElement>("[data-track-diffs]");
+      const counter = root.querySelector<HTMLElement>(`[data-track-count="diffs"]`);
+      if (counter) counter.textContent = diffs.length ? `(${diffs.length})` : "";
+      if (!box) return;
+      if (!diffs.length) {
+        box.innerHTML = `<div class="surface">${esc(labels.empty)}</div>`;
+        return;
+      }
+      box.innerHTML = diffs
+        .map((d, idx) => {
+          const tblHtml = (d.tables || [])
+            .map((t: any) => {
+              const hl = (t.highlights || []).length
+                ? `<ul class="track-diff-highlights">${t.highlights.map((h: string) => `<li class="track-mono">${esc(h)}</li>`).join("")}</ul>`
+                : "";
+              return `<div class="track-diff-table-row">
+                <div class="track-diff-table-head">
+                  <strong class="track-mono">${esc(t.table)}</strong>
+                  ${t.added ? `<span class="chip chip--static chip--tonal"><span class="chip__label">+${Number(t.added)}</span></span>` : ""}
+                  ${t.modified ? `<span class="chip chip--static"><span class="chip__label">~${Number(t.modified)}</span></span>` : ""}
+                  ${t.removed ? `<span class="chip chip--static"><span class="chip__label">-${Number(t.removed)}</span></span>` : ""}
+                </div>
+                ${hl}
+              </div>`;
+            })
+            .join("");
+          return `<article class="track-diff-card" data-diff-index="${idx}">
+            <div class="track-diff-card__head">
+              <div>
+                <strong class="track-mono">${esc(d.oldMaster || "?")} → ${esc(d.newMaster || "?")}</strong>
+              </div>
+              <div class="track-branch-cell">
+                <span class="chip chip--static chip--tonal"><span class="chip__label">${Number(d.changedTables || 0)} ${esc(labels.tablesChanged)}</span></span>
+                <span class="track-stamp">${esc(d.timestamp || "")}</span>
+              </div>
+            </div>
+            <div class="track-diff-tables">${tblHtml}</div>
+          </article>`;
+        })
+        .join("");
+    };
+
+    const loadBranches = async () => {
+      const urls = [
+        `/api/track/branches?t=${Date.now()}`,
+        `${ASSET_ORIGIN}/track/branches.json?t=${Date.now()}`,
+      ];
+      let data: any = null;
+      for (const u of urls) {
+        try {
+          const res = await fetch(u, { headers: { Accept: "application/json" } });
+          if (res.ok) {
+            const parsed = await res.json();
+            if (parsed && (Array.isArray(parsed.fromTokyo) || Array.isArray(parsed.bilibili))) {
+              if (parsed.fromTokyo?.length || parsed.bilibili?.length || u.startsWith("https://")) {
+                data = parsed;
+                break;
+              }
+            }
+          }
+        } catch {}
+      }
+      if (!data) return;
+      rawFtkRows = Array.isArray(data.fromTokyo) ? data.fromTokyo : [];
+      rawBiliRows = Array.isArray(data.bilibili) ? data.bilibili : [];
+      cachedDiffs = Array.isArray(data.recentMasterDiffs) ? data.recentMasterDiffs : [];
+      availableMasters = Array.isArray(data.availableMasters) ? data.availableMasters : [];
+
+      const gen = root.querySelector<HTMLElement>("[data-track-generated]");
+      if (gen && data.generatedAt) gen.textContent = data.generatedAt;
+      renderDiffs(cachedDiffs);
+      renderBranchRows(rawFtkRows, "ftk");
+      renderBranchRows(rawBiliRows, "bili");
+      renderMastersDropdown(availableMasters);
+    };
+
+    onlyOpenCheckbox?.addEventListener("change", () => {
+      renderBranchRows(rawFtkRows, "ftk");
+      renderBranchRows(rawBiliRows, "bili");
+    });
+
+    masterSelect?.addEventListener("change", () => {
+      if (masterSelect.value) void selectMasterBuild(masterSelect.value);
+    });
+
+    tableFilterInput?.addEventListener("input", () => {
+      renderTableSidebar();
+    });
+
+    rowFilterInput?.addEventListener("input", () => {
+      showAllCurrentRows = false;
+      renderViewerContent();
+    });
+
+    showAllBtn?.addEventListener("click", () => {
+      showAllCurrentRows = true;
+      renderViewerContent();
+    });
+
+    copyBtn?.addEventListener("click", async () => {
+      if (!lastRenderedJsonText) return;
+      try {
+        await navigator.clipboard.writeText(lastRenderedJsonText);
+        if (copyLabel) {
+          const prev = copyLabel.textContent;
+          copyLabel.textContent = labels.copiedJson || "Copied!";
+          setTimeout(() => {
+            copyLabel.textContent = prev;
+          }, 1400);
+        }
+      } catch {}
+    });
+
+    root.querySelector("[data-track-refresh]")?.addEventListener("click", () => {
+      void loadBranches();
+    });
+
+    void loadBranches();
+  }
+
+  initTrackPage();
+  document.addEventListener("astro:page-load", initTrackPage);
+</script>

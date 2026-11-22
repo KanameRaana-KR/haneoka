@@ -3,6 +3,7 @@
 // Output: 静态／API 响应、后台任务及队列处理。
 // Pos: [Map](L2.md)；Cloudflare 生产请求和任务组合根。
 // Effects/Dependencies: HTML 更新基准与 ASSETS 发布绑定；连接 D1、R2、缓存、认证、外部服务与队列／容器。
+import { ensureAssetBucket } from "./public-r2-fallback";
 import { rejectedResourceClient } from "./resource-clients";
 import { stripDocumentVersion } from "../src/lib/document-address.ts";
 import { serveMarkdownEntity } from "./markdown-documents";
@@ -44,7 +45,6 @@ import { refreshCommunityRanking, COMMUNITY_RANKING_CRON } from "./community-ran
 import { handleCommunityBootstrap } from "./community-bootstrap";
 import { retainRequestRead, withRequestWork } from "./request-work";
 import { handleCommunityMediaQueue, reconcileCommunityMedia } from "./community-media";
-export { CommunityMediaContainer } from "./community-media-container";
 import { sonolusShareRedirectTarget } from "./sonolus-share";
 import { handleOfficialPlayerApi } from "./official-player-api";
 import { cleanupUnverifiedAccounts } from "./account-lifecycle";
@@ -637,6 +637,16 @@ async function activeResourceServer(env: Env, slug: string): Promise<ResourceSer
   const now = Date.now();
   const cached = resourceServerRouteCache.get(slug);
   if (cached && cached.expiresAt > now) return cached.value;
+  if (!env.DB) {
+    const fallback: ResourceServerRoute | null =
+      slug === "jp"
+        ? { resourcePrefix: "servers/jp", slug: "jp", baseServer: "jp" }
+        : slug === "intl"
+          ? { resourcePrefix: "servers/intl", slug: "intl", baseServer: "intl" }
+          : null;
+    cacheResourceServerRoute(slug, { expiresAt: now + RESOURCE_SERVER_CACHE_TTL_MS, value: fallback }, now);
+    return fallback;
+  }
   const row = await env.DB.prepare(
     `SELECT slug, region, resource_prefix AS resourcePrefix
      FROM resource_server
@@ -661,6 +671,17 @@ async function activeResourceServers(env: Env): Promise<readonly ResourceServerR
   const now = Date.now();
   if (resourceServerRouteListCache && resourceServerRouteListCache.expiresAt > now) {
     return resourceServerRouteListCache.value;
+  }
+  if (!env.DB) {
+    const value = Object.freeze([
+      { resourcePrefix: "servers/intl", slug: "intl", baseServer: "intl" as const },
+      { resourcePrefix: "servers/jp", slug: "jp", baseServer: "jp" as const },
+    ]);
+    for (const route of value) {
+      cacheResourceServerRoute(route.slug, { expiresAt: now + RESOURCE_SERVER_CACHE_TTL_MS, value: route }, now);
+    }
+    resourceServerRouteListCache = { expiresAt: now + RESOURCE_SERVER_CACHE_TTL_MS, value };
+    return value;
   }
   const result = await env.DB.prepare(
     `SELECT slug, region, resource_prefix AS resourcePrefix
@@ -713,6 +734,18 @@ async function handleReleaseRegistryApi(
     ctx,
     RELEASE_REGISTRY_CACHE_TTL,
     async () => {
+      if (!env.DB) {
+        return jsonResponse(
+          request,
+          {
+            releases: [
+              { id: "intl", displayName: "International", region: "intl" },
+              { id: "jp", displayName: "Japan", region: "jp" },
+            ],
+          },
+          RELEASE_REGISTRY_CACHE_CONTROL,
+        );
+      }
       const result = await env.DB.prepare(
         `SELECT slug, display_name AS displayName, region
          FROM resource_server
@@ -4307,8 +4340,35 @@ async function handleRequest(request: Request, env: Env, ctx: ExecutionContext, 
   return response;
 }
 
+let jpReleaseCheckAt = 0;
+let jpReleasePresent = false;
+async function hasJpRelease(env: Env): Promise<boolean> {
+  const now = Date.now();
+  if (now - jpReleaseCheckAt < 60_000) return jpReleasePresent;
+  try {
+    const head = await env.ASSET_BUCKET?.head("servers/jp/current.json");
+    jpReleasePresent = Boolean(head);
+    jpReleaseCheckAt = now;
+  } catch {
+    jpReleasePresent = false;
+  }
+  return jpReleasePresent;
+}
+
 async function handleScopedRequest(request: Request, env: Env, ctx: ExecutionContext, preferAssets = false): Promise<Response> {
   const url = new URL(request.url);
+  if ((request.method === "GET" || request.method === "HEAD") && !(await hasJpRelease(env))) {
+    if (url.pathname === "/jp" || url.pathname.startsWith("/jp/")) {
+      const redirected = new URL(request.url);
+      redirected.pathname = `/intl${url.pathname.slice(3) || "/"}`;
+      return new Response(null, { status: 302, headers: { Location: redirected.toString(), "Cache-Control": "no-store" } });
+    }
+    if (/^\/(?:assets|runtime|objects)\/jp\//u.test(url.pathname)) {
+      const rewritten = new URL(request.url);
+      rewritten.pathname = url.pathname.replace(/^\/(assets|runtime|objects)\/jp\//u, "/$1/intl/");
+      return handleScopedRequest(new Request(rewritten, request), env, ctx, preferAssets);
+    }
+  }
   const officialHost = /^\/api\/internal\/official-host\/(.+)$/u.exec(url.pathname);
   if (officialHost) {
     const path = officialHost[1]!;
@@ -4408,12 +4468,25 @@ async function handleScopedRequest(request: Request, env: Env, ctx: ExecutionCon
   if (dynamicHost) {
     const discovery = await serveSiteDiscovery(request, env);
     if (discovery) return discovery;
+    const contentVisibility = await handleContentVisibilityRequest(request, env);
+    if (contentVisibility) return contentVisibility;
+    const screenshotRecognition = await handleScreenshotRecognitionRequest(request, env, recognitionReferenceProvider);
+    if (screenshotRecognition) return screenshotRecognition;
+    if (!env.DB) {
+      if (url.pathname === "/api/auth/get-session") {
+        return new Response("null", { status: 200, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" } });
+      }
+      if (url.pathname === "/api/v1/community/bootstrap") {
+        return new Response(JSON.stringify({ session: null, viewer: null, forums: [] }), { status: 200, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" } });
+      }
+      if (url.pathname === "/api/v1/search") {
+        return new Response(JSON.stringify({ items: [], total: 0 }), { status: 200, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" } });
+      }
+    } else {
     const registration = await handleAccountRegistrationRequest(request, env);
     if (registration) return registration;
     const auth = await handleAuthRequest(request, env);
     if (auth) return auth;
-    const contentVisibility = await handleContentVisibilityRequest(request, env);
-    if (contentVisibility) return contentVisibility;
     const appAccount = await handleAppAccountRequest(request, env);
     if (appAccount) return appAccount;
     if (url.pathname === "/api/v1/search") {
@@ -4552,6 +4625,7 @@ async function handleScopedRequest(request: Request, env: Env, ctx: ExecutionCon
     if (communityActivity) return communityActivity;
     const community = await handleCommunityRequest(request, env);
     if (community) return community;
+    }
   }
   const sonolusRequest = url.pathname === "/sonolus" || url.pathname.startsWith("/sonolus/");
   if (request.method === "OPTIONS")
@@ -4641,6 +4715,73 @@ async function handleScopedRequest(request: Request, env: Env, ctx: ExecutionCon
     };
   });
   if (staticViewResponse) return staticViewResponse;
+  if (url.pathname === "/api/track/branches" && (request.method === "GET" || request.method === "HEAD")) {
+    const obj = await env.ASSET_BUCKET?.get("track/branches.json");
+    if (!obj) {
+      return new Response(JSON.stringify({ schema: "siriustrack-branches-v2", fromTokyo: [], bilibili: [], availableMasters: [], recentMasterDiffs: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+      });
+    }
+    return new Response(request.method === "HEAD" ? null : obj.body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, max-age=60",
+        ...(obj.httpEtag ? { ETag: obj.httpEtag } : {}),
+      },
+    });
+  }
+  if (url.pathname === "/api/track/masters" && (request.method === "GET" || request.method === "HEAD")) {
+    const obj = await env.ASSET_BUCKET?.get("track/masters/index.json");
+    if (!obj) {
+      return new Response(JSON.stringify({ schema: "siriustrack-masters-index-v1", masters: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+      });
+    }
+    return new Response(request.method === "HEAD" ? null : obj.body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, max-age=60",
+        ...(obj.httpEtag ? { ETag: obj.httpEtag } : {}),
+      },
+    });
+  }
+  const masterRouteMatch = /^\/api\/track\/masters\/([0-9a-f]{32})\/([A-Za-z0-9_]+)\.json$/u.exec(url.pathname);
+  if (masterRouteMatch && (request.method === "GET" || request.method === "HEAD")) {
+    const [, mh, namePart] = masterRouteMatch;
+    if (namePart === "manifest") {
+      const mfObj = await env.ASSET_BUCKET?.get(`track/masters/${mh}/manifest.json`);
+      if (!mfObj) return errorResponse(request, 404, "not_found", "Master manifest not found");
+      return new Response(request.method === "HEAD" ? null : mfObj.body, {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          "Cache-Control": "public, max-age=31536000, immutable",
+          ...(mfObj.httpEtag ? { ETag: mfObj.httpEtag } : {}),
+        },
+      });
+    }
+    const mfObj = await env.ASSET_BUCKET?.get(`track/masters/${mh}/manifest.json`);
+    if (!mfObj) return errorResponse(request, 404, "not_found", "Master manifest not found");
+    const mf = await new Response(mfObj.body).json<{ tables?: Array<{ name: string; blob: string }> }>();
+    const entry = (mf.tables ?? []).find((t) => t.name === namePart);
+    if (!entry?.blob) return errorResponse(request, 404, "not_found", "Master table not found");
+    const blobObj = await env.ASSET_BUCKET?.get(entry.blob);
+    if (!blobObj) return errorResponse(request, 404, "not_found", "Master table blob not found");
+    const isDownload = url.searchParams.get("download") === "1";
+    return new Response(request.method === "HEAD" ? null : blobObj.body, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "public, max-age=31536000, immutable",
+        ...(isDownload ? { "Content-Disposition": `attachment; filename="${mh.slice(0, 8)}_${namePart}.json"` } : {}),
+        ...(blobObj.httpEtag ? { ETag: blobObj.httpEtag } : {}),
+      },
+    });
+  }
   if (url.pathname.startsWith("/api/")) return errorResponse(request, 404, "route_not_found", "API route not found");
   const documentRequest =
     url.pathname.endsWith("/") || url.pathname.endsWith(".html") || !/\.[^/]+$/u.test(url.pathname);
@@ -4918,7 +5059,8 @@ async function cleanupDatabase(env: Env): Promise<void> {
 }
 
 const worker: ExportedHandler<Env> = {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  async fetch(request: Request, rawEnv: Env, ctx: ExecutionContext): Promise<Response> {
+    const env = ensureAssetBucket(rawEnv);
     try {
       return await withRequestWork(ctx, () =>
         withD1Session(request, env, async (routedEnv) => {
@@ -5015,6 +5157,7 @@ const worker: ExportedHandler<Env> = {
     );
   },
   async queue(batch: MessageBatch, env: Env): Promise<void> {
+    if (!env.DB) return;
     if (await handleCommunityMediaQueue(batch, env)) return;
     await handleModerationQueue(batch, env);
     await reconcileCommunityStories(env);

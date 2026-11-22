@@ -57,7 +57,7 @@ let devAssetRoutes = false;
 let buildStarted = 0;
 
 export default defineConfig({
-  site: "https://haneoka.org",
+  site: "https://siriustrack.site",
   output: "static",
   outDir: path.join(root, ".output/public"),
   publicDir: path.join(root, ".generated-public"),
@@ -144,6 +144,19 @@ export default defineConfig({
       },
     },
     resolve: { dedupe: ["lit", "three"] },
+    ssr: {
+      noExternal: [
+        "entities",
+        "estree-walker",
+        "@babel/parser",
+        "source-map-js",
+        "tiny-inflate",
+        "vue",
+        "@vue/compiler-dom",
+        "@vue/compiler-core",
+        "@vue/shared",
+      ],
+    },
     // The chart adapters use independent core versions; a shared dev bundle cannot serve both.
     optimizeDeps: { exclude: ["@sonolus/core"] },
     server: {

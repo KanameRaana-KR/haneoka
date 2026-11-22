@@ -112,11 +112,24 @@ def _required_file_size(file: Path, label: str) -> int:
     return size
 
 
+def _is_white_masked_dummy(image: Any, file: Path) -> bool:
+    posix = file.as_posix().lower()
+    if not any(tag in posix for tag in ("membercard", "supportcard", "jacket", "gacha", "event")):
+        return False
+    try:
+        colors = set(image.convert("RGB").resize((64, 64)).getdata())
+        return len(colors) <= 5 and (255, 255, 255) in colors
+    except Exception:
+        return False
+
+
 def _save_png(file: Path, obj: Any) -> None:
     file.parent.mkdir(parents=True, exist_ok=True)
     temporary = file.with_name(f".{file.name}.{os.getpid()}.tmp")
     try:
         image = obj.read().image
+        if _is_white_masked_dummy(image, file):
+            sys.stderr.write(f"warning: white-masked dummy texture detected (#FFFFFF): {file.as_posix()}\n")
         image.save(temporary, format="PNG")
         if file.exists():
             if sha256_file(file) != sha256_file(temporary):

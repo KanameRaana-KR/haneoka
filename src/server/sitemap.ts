@@ -21,7 +21,7 @@ import { skillCatalogPayload, skillPageId } from "./skill-catalog";
 import { playlistPageData } from "./playlist-page-data";
 import { deserializeSongLibrary, officialPlaylists } from "../lib/playlists/library";
 
-const ORIGIN = "https://haneoka.org";
+const ORIGIN = "https://siriustrack.site";
 const LIMIT = 45_000;
 const xml = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
   .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");

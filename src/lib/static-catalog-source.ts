@@ -32,7 +32,7 @@ import { publicStampManifest } from "./stamp-maker/public-manifest";
  * mirror or an origin hostname outside edge mitigation); STATIC_CATALOG_TOKEN
  * is sent as `x-haneoka-build-token` for an edge rule that lets builds pass.
  */
-const ORIGIN = (process.env.STATIC_CATALOG_ORIGIN || "https://haneoka.org").replace(/\/+$/, "");
+const ORIGIN = (process.env.STATIC_CATALOG_ORIGIN || "https://siriustrack.site").replace(/\/+$/, "");
 const TOKEN = process.env.STATIC_CATALOG_TOKEN || "";
 const BUST = `static-catalog-${Date.now()}`;
 const RETRYABLE = new Set([403, 429, 500, 502, 503, 504]);
@@ -125,11 +125,22 @@ function localCatalog(server: string): ReleaseCatalog | null {
   if (process.env.STATIC_CATALOG_SOURCE === "http") return null;
   if (localCatalogs.has(server)) return localCatalogs.get(server) || null;
   const pointer = nodePath.join(process.cwd(), "data", "servers", server, "current.json");
-  const catalog = process.env.RESOURCE_RELEASE_ROOT || fs.existsSync(pointer) ? openReleaseCatalog(server) : null;
+  const fallbackIntl =
+    !fs.existsSync(pointer) &&
+    server === "jp" &&
+    fs.existsSync(nodePath.join(process.cwd(), "data", "servers", "intl", "current.json"));
+  const catalog =
+    process.env.RESOURCE_RELEASE_ROOT || fs.existsSync(pointer)
+      ? openReleaseCatalog(server)
+      : fallbackIntl
+        ? openReleaseCatalog("intl")
+        : null;
   localCatalogs.set(server, catalog);
   return catalog;
 }
 export const hasLocalStaticCatalog = (server: string): boolean => localCatalog(server) !== null;
+export const hasOwnLocalStaticCatalog = (server: string): boolean =>
+  fs.existsSync(nodePath.join(process.cwd(), "data", "servers", server, "current.json"));
 
 const localCriSources = new WeakMap<ReleaseCatalog, CriSourceProjection>();
 function readLocalCriSources(catalog: ReleaseCatalog): CriSourceProjection {
@@ -595,7 +606,7 @@ export async function staticCatalogRelease(server = "intl"): Promise<StaticCatal
   if (existing) return existing;
   const promise = staticBuildJson(`native-pin:${server}`, "native-pin", async () => {
     const local = localCatalog(server);
-    if (local) return Object.freeze({ ...local.identity });
+    if (local) return Object.freeze({ ...local.identity, server });
     return fetchResponse(
       "release?projection=identity",
       server,

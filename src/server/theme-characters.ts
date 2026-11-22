@@ -1,6 +1,6 @@
 /** Characters for the theme picker: band members with a chromatic colour, in band and display order. */
 import { Hct, argbFromHex } from "@material/material-color-utilities";
-import { fetchOptionalStaticCatalog, staticCatalogRelease } from "../lib/static-catalog-source";
+import { fetchOptionalStaticCatalog, hasLocalStaticCatalog, staticCatalogRelease } from "../lib/static-catalog-source";
 import { resolveLocalizedText } from "../lib/localized-text";
 import { staticBuildJson } from "./static-input-store";
 import type { ThemeCharacter } from "../lib/themes";
@@ -8,9 +8,10 @@ import type { ThemeCharacter } from "../lib/themes";
 type Row = Record<string, unknown>;
 
 async function rows(): Promise<Row[]> {
-  const release = await staticCatalogRelease("jp");
+  const server = hasLocalStaticCatalog("jp") ? "jp" : "intl";
+  const release = await staticCatalogRelease(server);
   return staticBuildJson(`theme-characters:${release.releaseId}`, "theme-characters", async () => {
-    const { value } = await fetchOptionalStaticCatalog("characters", "jp", release);
+    const { value } = await fetchOptionalStaticCatalog("characters", server, release);
     return Object.values((value || {}) as Record<string, Row>).map((row) => ({
       characterId: row.characterId,
       characterName: row.characterName,

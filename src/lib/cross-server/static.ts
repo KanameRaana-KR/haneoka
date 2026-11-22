@@ -1,4 +1,4 @@
-import { assertStaticServer, staticCatalogRelease, fetchStaticCatalog, fetchStaticCatalogBatch, primeStaticCatalogBatch, type StaticCatalogRelease } from "../static-catalog-source";
+import { assertStaticServer, hasOwnLocalStaticCatalog, staticCatalogRelease, fetchStaticCatalog, fetchStaticCatalogBatch, primeStaticCatalogBatch, type StaticCatalogRelease } from "../static-catalog-source";
 import { loadCrossServerCatalog } from "./load";
 import { loadCrossServerCatalogs } from "./bundle";
 import type { CrossCatalogResource, OfficialCatalogServer } from "./catalog";
@@ -63,10 +63,15 @@ function collectionWithDerivedFields(resource: CrossCatalogResource, identity: S
   return pending;
 }
 
+function activeStaticServers(selectedServer: OfficialCatalogServer): OfficialCatalogServer[] {
+  const own = (["jp", "intl"] as const).filter((s) => hasOwnLocalStaticCatalog(s));
+  return own.length ? [...new Set([selectedServer, ...own].filter((s) => own.includes(s)))] : ["jp", "intl"];
+}
+
 export function loadStaticCrossServerCatalogs(resources: readonly CrossCatalogResource[], selectedServer: OfficialCatalogServer, locale: string) {
   assertStaticServer(selectedServer);
   return loadCrossServerCatalogs(resources, {
-    selectedServer, locale, servers: ["jp", "intl"],
+    selectedServer, locale, servers: activeStaticServers(selectedServer),
     reader: {
       async readIdentity(server) { return { ...await staticCatalogRelease(server), server }; },
       readCollection: (name, identity) => collectionWithDerivedFields(name, identity),
@@ -80,7 +85,7 @@ export function loadStaticCrossServerCatalog(resource: CrossCatalogResource, sel
   assertStaticServer(selectedServer);
   return loadCrossServerCatalog(resource, {
     selectedServer, locale,
-    servers: ["jp", "intl"],
+    servers: activeStaticServers(selectedServer),
     reader: {
       async readIdentity(server) {
         const identity = await staticCatalogRelease(server);
@@ -97,7 +102,7 @@ export function loadStaticCrossServerCatalog(resource: CrossCatalogResource, sel
 export function loadStaticCrossServerEntry(resource: CrossCatalogResource, selectedServer: OfficialCatalogServer, locale: string, id: string) {
   assertStaticServer(selectedServer);
   return loadCrossServerCatalog(resource, {
-    selectedServer, locale, withDependencies: false, servers: ["jp", "intl"],
+    selectedServer, locale, withDependencies: false, servers: activeStaticServers(selectedServer),
     reader: {
       async readIdentity(server) { return { ...await staticCatalogRelease(server), server }; },
       async readCollection(name, identity) {
